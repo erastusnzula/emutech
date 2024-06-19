@@ -1,0 +1,40 @@
+{% extends "emu/base.html" %}
+{% block content %}
+{% load static %}
+
+   
+
+<div class="cart-container">
+    <div class="cart-header">
+        <div class="cart-total-items">
+            <h1>Your Cart</h1>
+            <p class="items">Total items in cart - <span class="cart-total-span">{{order.get_cart_items}}</span></p>
+        </div>
+        <div class="cart-link">
+            <a href="{% url 'emu:item-list' %}">Continue Shopping</a>
+        <a href="{% url 'emu:checkout' %}">Checkout</a>
+        </div>    
+    </div>
+    <div class="cart-body">
+        <table>
+            <tr>
+                <th scope="col">SN</th>
+                <th scope="col">Image</th>
+                <th scope="col">Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Total</th>
+            </tr>
+            {% for item in order.items.all%}
+            {% include 'emu/snippets/cart_list.html' %}
+            {% endfor %}
+            <tr>
+                <th scope="row"></th>
+                <td class="cart-total" colspan="4">Total</td>
+                <td>${{order.get_total}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+{% endblock content %}

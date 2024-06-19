@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% load cart %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMU TECH</title> 
+    <link rel="stylesheet" type="text/css" href="{% static 'emu/css/styles.css' %}" />
+    <script src="https://kit.fontawesome.com/4605777c76.js" crossorigin="anonymous"></script>
+
+    <script>
+        let user = '{{request.user}}'
+        function getToken(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              const cookies = document.cookie.split(';');
+              for (let i = 0; i<cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  // Does this cookie string begin with the name we want?
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+        }
+
+        let csrftoken = getToken('csrftoken');
+        console.log(csrftoken)
+
+        function getCookie(name) {
+            let cookieArr = document.cookie.split(';');
+            for (let i=0; i<cookieArr.length; i++){
+              let cookiePair = cookieArr[i].split("=");
+              if(name==cookiePair[0].trim()){
+                return decodeURIComponent(cookiePair[1]);
+              }
+            }
+            return null;
+          }
+  
+          let cart = JSON.parse(getCookie('cart'));
+          if (cart==undefined){
+            cart={}
+            document.cookie= 'cart='+ JSON.stringify(cart) + ';domian=;path=/'
+            console.log("Cart created: ", cart)
+          }
+  
+          console.log("Cart"+ cart)
+    </script>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a id="logo" href="/">EMU TECH</a>
+            <input type="checkbox" id="check-box"/>
+            <label for="check-box" class="menu-icon">
+                <i class="fa-solid fa-bars" id="menu-icon"></i>
+                <i class="fa-solid fa-x" id="close-icon"></i>
+            </label>
+            <ul class="nav-items">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" style="--i:0;">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/" style="--i:1;">Mpesa</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'emu:item-list' %}" style="--i:2;">Shop</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" style="--i:3;">Contact Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'emu:add-to-cart' %}" style="--i:4;">Cart <span class="cart-badge">{{request.user|cart_items_count}}</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    {% block content %}
+    {% endblock content %}
+    <script src={% static 'emu/js/cart.js' %}></script>
+</body>
+</html>

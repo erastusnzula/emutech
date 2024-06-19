@@ -1,0 +1,11 @@
+{% extends "emu/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class='item-list'>
+    {% for item in items %}
+    {% include 'emu/snippets/item.html' %}
+    {% endfor %}
+</div>
+
+{% endblock content %}

@@ -1,0 +1,13 @@
+<div class="card">
+    <div class="card-header">
+        <img src="{{item.get_image_url}}" alt=""/> 
+    </div>
+    <div class="card-body">
+        <p>Name: <span>{{ item.name }}</span></p>
+        <p>Price: ${{ item.price }}</p>
+    </div>
+    <div class="card-footer">
+        <a class="update-cart" data-item_id={{item.id}} data-action="add">Add to Cart</a>
+        <a class="view-item" data-item_id={{item.id}} data-action="view">view</a>
+    </div>
+</div>
