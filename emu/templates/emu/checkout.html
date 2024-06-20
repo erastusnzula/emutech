@@ -1,128 +1,107 @@
-{% extends 'emu/base.html' %}
-
+{% extends "emu/base.html" %}
+{% load static %}
 {% block content %}
 
-<title>{% block head_title %}Checkout{% endblock head_title %}</title>
-
 <div class="checkout">
-    <h2 class="checkout-header">Checkout form</h2>
-    <hr/>
-    <div class="checkout-row">
-        <div class="checkout-column">
-            <div class="checkout-card">
-                <form method="post" class="card-body">
-                    {% csrf_token %}
-                    <div class="user-data">
-                        <div class="">
-                            <label for="user_name" class="">Name</label>
-                            <input type="text" id="user_name" name="user_name" placeholder="Nairobi">
+    <div class="header">
+        <h3>Checkout</h3>
+    </div>
+    <div class="body">
+        <form class="form">
+            <div class="user-shipping-info">
+                <div class="user-data">
+                    <h3>Personal Details</h3>
+                    <div class="name-email">
+                        <div class="form-fields">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" placeholder="Name">
                         </div>
-                        <div class="">
-                            <label for="shipping_address2" class="">Email</label>
-                            <input type="text" id="user_email"  name="user_email" placeholder="Nairobi">
+                        <div class="form-fields">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" placeholder="Email address">
                         </div>
                     </div>
                     
-                    <div class="hideable_shipping_form">
-                        <h5>Shipping Address</h5>
-                        <div class="shipping-information">
-                            <div class="ship-town">
-                                <div class="">
-                                    <label for="town" class="ship">Town</label>
-                                    <input type="text" id="town" name="town" placeholder="Umoja">
-                                </div>
-                                <div class="">
-                                    <label for="city" class="ship">City</label>
-                                    <input type="text" id="city"name="city" placeholder="Nairobi">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="zip_code">
-                                <label for="zip_code">Zip</label>
-                                <input type="text" id="zip_code" name="zip_code" placeholder="Postal code (Zip code)">
-                            </div>
-                            <div class="country">
-                                <label>Country</label>
-                                <p class="list">{{form.country}}</p>
-                            </div>
-                            
-                        </div>
-
-                        <div class="custom-checkbox">
-                            <label for="set_default_shipping">
-                            <input type="checkbox" name="set_default_shipping" id="set_default_shipping">
-                            Save as default shipping address</label>
-                        </div>
+                </div>
+                <div class="shipping-info">
+                    <h3>Shipping Address</h3>
+                    <div class="town-city">
+                        <label for="town">Town</label>
+                        <input type="text" id="town" name="town" placeholder="Town">
+                        <label for="city">City</label>
+                        <input type="text" id="name" name="city" placeholder="City">
                     </div>
-
-                    {% if default_shipping_address %}
-                    <div class="custom-checkbox">
-                        <input type="checkbox" name="use_default_shipping" id="use_default_shipping">
-                        <label for="use_default_shipping">Use default shipping address: {{default_shipping_address.address|truncatechars:10}}</label>
-                    </div>
-                    {% endif %}
-                    <hr>
-
-                    <h5>Payment Options</h5>
-                    <div class="d-block my-3">
-                        {% for value, name in form.fields.payment_option.choices %}
-                        <div class="custom-control custom-radio">
-                            <input id="{{name}}" name="payment_option" value="{{value}}" type="radio"
-                                   class="custom-control-input" required>
-                            <label class="custom-control-label" for="{{name}}">{{name}}</label>
-                            <!--{{form.payment_option}}-->
+                    <div class="country-zip-code">
+                        <div class="country">
+                            <label for="country">Country</label>
+                            <select id="country" name="country">
+                            <option value="australia">Australia</option>
+                            <option value="canada">Canada</option>
+                            <option value="usa">USA</option>
+                            </select>
                         </div>
-                        {% endfor %}
-                      
+                        <div class="zip-code">
+                            <label for="zip-code">Zip Code</label>
+                            <input type="text" id="zip-code" name="zip-code" placeholder="1234">
+                        </div>
+                    
                     </div>
-                    <hr>
-                    <button class="proceed" type="submit">Continue to Checkout</button>
+                    <div class="save">
+                        <input type="radio" id="save" name="save" placeholder="Save">
+                        <label for="save">Save</label>
+                    </div>
+                    
+                </div>
+    
+            </div>
+            <button>Continue</button>
+           
+        </form>
+        <div class="cart">
+            <div class="header-cart">
+                <h3 class="title">Your cart</h3>
+                <h3 class="number_of_items">2</h3>
+            </div>
+           
+            <div class="items">
+                <div class="item">
+                    <div class="quantity-name">
+                        <h4>2 x Shoes</h4>
+                        <small>I love this product so much.</small>
+                    </div>
+                    <div class="price">
+                        <h4>Ksh. 2,000</h4>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="quantity-name">
+                        <h4>2 x Shoes</h4>
+                        <small>I love this product so much.</small>
+                    </div>
+                    <div class="price">
+                        <h4>Ksh. 2,000</h4>
+                    </div>
+                </div>
+                
+                <h3 class="total">Total: Ksh. 9,000</h3>
+            </div>
+
+            <div class="coupon">
+                <form class="coupon-form">
+                    <div class="form-fields">
+                        <label for="code"></label>
+                        <input type="text" id="code" name="code" placeholder="Promotion code" required>
+                    </div>
+                    <div class="coupon-submit">
+                        <button type="submit">Redeem</button>
+                    </div>
+                    
                 </form>
             </div>
-        </div>
-
-        <div class="checkout-cart">
-            {% include 'emu/snippets/checkout_cart.html' %}
+            
         </div>
     </div>
+
 </div>
 
 {% endblock content %}
-
-{% block extra_scripts %}
-<script>
-var hideable_shipping_form = $('.hideable_shipping_form');
-var hideable_billing_form = $('.hideable_billing_form');
-var billing= $('.billing');
-var use_default_shipping = document.querySelector("input[name=use_default_shipping]");
-var use_default_billing = document.querySelector("input[name=use_default_billing]");
-var same_billing_address = document.querySelector("input[name=same_billing_address]");
-
-use_default_shipping.addEventListener('change', function(){
-    if (this.checked){
-        hideable_shipping_form.hide();
-    } else {
-    hideable_shipping_form.show();
-    }
-})
-
-use_default_billing.addEventListener('change', function(){
-    if (this.checked){
-        hideable_billing_form.hide();
-    } else{
-    hideable_billing_form.show();
-    }
-})
-
-same_billing_address.addEventListener('change', function(){
-    if (this.checked){
-        billing.hide();
-
-    } else{
-     billing.show();
-    }
-})
-
-</script>
-{% endblock extra_scripts %}
