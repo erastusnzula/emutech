@@ -245,8 +245,6 @@ tr:nth-child(even) {
 .checkout .header{
     text-align: center;
     margin-bottom: 1rem;
-    color: blueviolet;
-    
 }
 
 .checkout .body{
@@ -265,11 +263,6 @@ tr:nth-child(even) {
     padding: 1rem;
 }
 
-.checkout .body .user-data h3{
-   padding: 1rem;
-   border-bottom: 1px solid blueviolet;
-   color: blueviolet;
-}
 .checkout .body .user-data .name-email{
     display: flex;
     justify-content: space-between;
@@ -298,47 +291,8 @@ tr:nth-child(even) {
 }
 
 .checkout .body .shipping-info .save{
-    display: inline-flex;
-    padding: 1rem 0;
-}
-
-.checkout .body .shipping-info .save .form-fields input{
-    margin: 0;
-}
-
-.checkout .body .shipping-info .save .form-fields{
-    display: flex;
-    align-items: center;
-    gap: .5rem;    
-}
-
-.checkout .body .shipping-info .use-default{
-    display: inline-flex;
-}
-
-.checkout .body .shipping-info .use-default input{
-    margin: 0;
-}
-
-.checkout .body .shipping-info .use-default .form-fields{
-    display: inline-flex;
-    align-items: center;
-    padding: 0;
-}
-
-.checkout .body .payment-options{
-    margin-top: .5rem;
+    background-color: red;
     
-}
-
-.checkout .body .payment-options .form-fields input{
-    margin: 0;
-}
-
-.checkout .body .payment-options .form-fields{
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
 }
 
 .checkout .body .cart{
@@ -390,7 +344,7 @@ tr:nth-child(even) {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
     
 }
 
@@ -415,23 +369,6 @@ tr:nth-child(even) {
     margin-top: .8rem;
 }
 
-.checkout .body .form button{
-    margin-top: .8rem;
-    width: 100%;
-    border-radius: .5rem;
-    cursor: pointer;
-    padding: .8rem 0;
-    border: none;
-    color: #fff;
-    background-color: blueviolet;
-}
-
-.checkout .body .form button:hover{
-    color: blueviolet;
-    background-color: #fff;
-    border: 1px solid blueviolet;
-    padding: .9rem;
-}
 
 @media (max-width: 992px) {
     .navbar .nav-container{

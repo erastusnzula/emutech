@@ -83,6 +83,7 @@ class Checkout(View):
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, is_complete=False)
+            print(order.for_shipping)
             form = CheckoutForm()
             context = {
                 'form': form,
@@ -91,10 +92,11 @@ class Checkout(View):
                 'DISPLAY_COUPON_FORM': True
             }
             shipping_address_qs = ShippingAddress.objects.filter(
-                user=self.request.user
+                user=self.request.user,
+                default = True
             )
             if shipping_address_qs.exists():
-                context.update({'default_shipping_address': shipping_address_qs[0]})
+                context.update({'default_address': shipping_address_qs[0]})
 
             return render(self.request, 'emu/checkout.html', context)
 

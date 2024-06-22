@@ -7,14 +7,15 @@
         <h3>Checkout</h3>
     </div>
     <div class="body">
-        <form class="form">
+        <form class="form" action=".">
+            {% csrf_token %}
             <div class="user-shipping-info">
-                <div class="user-data">
+                <div class="user-data" id="user-data">
                     <h3>Personal Details</h3>
                     <div class="name-email">
                         <div class="form-fields">
                             <label for="name">Name</label>
-                            <input type="text" id="name" name="name" placeholder="Name">
+                            <input type="text" id="name" name="name" placeholder="Name" autofocus>
                         </div>
                         <div class="form-fields">
                             <label for="email">Email Address</label>
@@ -23,21 +24,22 @@
                     </div>
                     
                 </div>
-                <div class="shipping-info">
-                    <h3>Shipping Address</h3>
+                <div class="shipping-info" id="shipping-info">
+                    <h3 style="color: blueviolet;">Shipping Address</h3>
                     <div class="town-city">
-                        <label for="town">Town</label>
-                        <input type="text" id="town" name="town" placeholder="Town">
-                        <label for="city">City</label>
-                        <input type="text" id="name" name="city" placeholder="City">
+                        <div class="form-fields">
+                            <label for="town">Town</label>
+                            <input type="text" id="town" name="town" placeholder="Town">
+                        </div>
+                        <div class="form-fields">
+                            <label for="city">City</label>
+                            <input type="text" id="name" name="city" placeholder="City">
+                        </div>
                     </div>
                     <div class="country-zip-code">
                         <div class="country">
                             <label for="country">Country</label>
-                            <select id="country" name="country">
-                            <option value="australia">Australia</option>
-                            <option value="canada">Canada</option>
-                            <option value="usa">USA</option>
+                            {{form.country}}
                             </select>
                         </div>
                         <div class="zip-code">
@@ -47,45 +49,69 @@
                     
                     </div>
                     <div class="save">
-                        <input type="radio" id="save" name="save" placeholder="Save">
-                        <label for="save">Save</label>
+                        <div class="form-fields">
+                            <input type="checkbox" id="save" name="save">
+                            <label for="save">Save</label>
+                        </div>
+                        
                     </div>
+                    {% if default_address %}
+                    <div class="use-default">
+                        <div class="form-fields">
+                            <input type="checkbox" id="use-default" name="use-default">
+                            <label for="use-default">{{default_address.town|truncatechars:10}}</label>
+                        </div>
+                    </div>
+                    {% endif %}
                     
+                    
+                </div>
+                <div style="">
+                    <h3 style="color: blueviolet;">Payment Options</h3>
+                    {% for value, name in form.fields.payment_option.choices %}     
+                    <div class="payment-options">
+                        <div class="form-fields">
+                            <input type="radio" id="{{name}}" name="payment-options" value="{{value}}" required>
+                            <label for="{{name}}">{{name}}</label>
+                        </div>
+                    
+                    </div>
+                    {% endfor %}
                 </div>
     
             </div>
-            <button>Continue</button>
+            <button type="submit">Continue</button>
            
         </form>
         <div class="cart">
             <div class="header-cart">
-                <h3 class="title">Your cart</h3>
-                <h3 class="number_of_items">2</h3>
+                <h3 style="color: blueviolet;" class="title">Your cart</h3>
+                <h3 class="number_of_items">{{order.get_cart_items}}</h3>
             </div>
            
             <div class="items">
+                {% for item in order.items.all %}
                 <div class="item">
                     <div class="quantity-name">
-                        <h4>2 x Shoes</h4>
-                        <small>I love this product so much.</small>
+                        <h4>{{item.quantity}} x {{item.item.name}}</h4>
+                        <small>{{item.item.description}}</small>
                     </div>
                     <div class="price">
-                        <h4>Ksh. 2,000</h4>
+                        <h4>${{item.get_price}}</h4>
                     </div>
                 </div>
-                <div class="item">
-                    <div class="quantity-name">
-                        <h4>2 x Shoes</h4>
-                        <small>I love this product so much.</small>
-                    </div>
-                    <div class="price">
-                        <h4>Ksh. 2,000</h4>
-                    </div>
+                {% endfor%}
+               {% if order.coupon %}
+                <div class="">
+                    <h5 class="my-0">Promotion code: {{order.coupon.code}}</h5>
+                    <p class="">(${{order.coupon.amount}})</p>
                 </div>
                 
-                <h3 class="total">Total: Ksh. 9,000</h3>
+                {% endif%}
+                
+                <h3 class="total">Total: ${{order.get_total}}</h3>
             </div>
-
+            {% if DISPLAY_COUPON_FORM %}
             <div class="coupon">
                 <form class="coupon-form">
                     <div class="form-fields">
@@ -98,10 +124,25 @@
                     
                 </form>
             </div>
+            {% endif %}
             
         </div>
     </div>
 
 </div>
+<script>
+    const userData = document.getElementById("user-data");
+    const shippingInfo = document.getElementById("shipping-info");
+    let shipping = '{{order.for_shipping}}'
+    let total = '{{order.get_total}}'
+    if(shipping == 'False'){
+        console.log("shipping")
+        shippingInfo.innerHTML = '';
+    }
+
+    if(user != 'AnonymousUser'){
+        userData.innerHTML = ''
+    }
+</script>
 
 {% endblock content %}

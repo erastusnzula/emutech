@@ -6,9 +6,11 @@ from django_countries.widgets import CountrySelectWidget
 
 
 PAYMENT_OPTION = (
-    ('S', 'Stripe'),
+    ('M', 'Mpesa'),
     ('P', 'PayPal'),
-    ('M', 'Mpesa')
+    ('S', 'Stripe'),
+    
+    
 )
 
 
@@ -16,9 +18,7 @@ class CheckoutForm(forms.Form):
     town = forms.CharField(required=False)
     city = forms.CharField(required=False)
     country = CountryField(blank_label='(select country)').formfield(required=False,
-                                                                              widget=CountrySelectWidget(attrs={
-                                                                                  'class': 'custom-select d-block w-100'
-                                                                              }))
+                                                                              widget=CountrySelectWidget())
     zip_code = forms.CharField(required=False)
     set_default_shipping = forms.BooleanField(required=False)
     use_default_shipping = forms.BooleanField(required=False)

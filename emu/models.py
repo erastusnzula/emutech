@@ -105,6 +105,15 @@ class Order(models.Model):
     
     def __str__(self):
         return self.user.username
+    
+    @property
+    def for_shipping(self):
+        shipping = False
+        for item in self.items.all():
+            if item.item.is_digital == False:
+                shipping = True
+        return shipping
+        
             
         
 class Coupon(models.Model):
@@ -120,7 +129,9 @@ class ShippingAddress(models.Model):
     city = models.CharField(max_length= 255, blank=True, null=True)
     country = models.CharField(max_length=255, blank=True, null=True)
     zipe_code = models.CharField(max_length=255, blank=True, null=True)
+    default = models.BooleanField(default=False)
     created_on = models.DateTimeField(auto_now_add=True)
+    
     
     def __str__(self):
         return self.user.username
