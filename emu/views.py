@@ -106,7 +106,43 @@ class Checkout(View):
             return redirect('emu:checkout')
     def post(self, *args, **kwargs):
         data = json.loads(self.request.body)
-        print(data)
+        order = Order.objects.get(user=self.request.user, is_complete=False)
+        use_default = data['shippingInfo']['useDefault']
+        print(f"IN THIS{use_default}")
+        if use_default == True:
+            
+            address_qs = ShippingAddress.objects.filter(
+                        user=self.request.user,
+                        default=True)
+            if address_qs.exists():
+                        shipping_address_1 = address_qs[0]
+                        order.shipping_address = shipping_address_1
+                        order.save()
+            else:
+                messages.info(self.request, 'No default shipping address available.')
+                return redirect('emu:checkout')
+        else:
+            town = data['shippingInfo']['town']
+            city = data['shippingInfo']['city']
+            country = data['shippingInfo']['country']
+            zip_code = data['shippingInfo']['zipCode']
+            shipping_address = ShippingAddress()
+            shipping_address.user = self.request.user
+            shipping_address.town = town,
+            shipping_address.city = city,
+            shipping_address.zipe_code = zip_code,
+            shipping_address.country = country,
+            set_default = data['shippingInfo']['save']
+            if set_default == True:
+                shipping_address.default = True 
+                shipping_address.save()
+                order.shipping_address = shipping_address
+                order.save()
+            else:
+                shipping_address.save()
+                order.shipping_address = shipping_address
+                order.save()    
+        
         return JsonResponse("Data received", safe=False)
     
     

@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EMU TECH</title> 
     <link rel="stylesheet" type="text/css" href="{% static 'emu/css/styles.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'mpesa/css/styles.css' %}" />
     <script src="https://kit.fontawesome.com/4605777c76.js" crossorigin="anonymous"></script>
 
     <script>
@@ -66,7 +67,7 @@
                     <a class="nav-link" href="#" style="--i:0;">About</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/" style="--i:1;">Mpesa</a>
+                    <a class="nav-link" href="{% url 'mpesa:stk-push' %}" style="--i:1;">Mpesa</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'emu:item-list' %}" style="--i:2;">Shop</a>

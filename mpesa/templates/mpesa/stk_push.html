@@ -1,0 +1,62 @@
+{% extends "emu/base.html" %}
+{% block content %}
+{% load static %}
+
+<!-- templates/mpesa/stk_push_form.html -->
+
+<div class="mpesa">
+    <h1>Lipa na MPESA</h1>
+    <img src="{% static 'mpesa/images/mpesa.png' %}" alt="">
+    <form id="stkPush" method="post" action="{% url 'mpesa:stk-push' %}">
+        {% csrf_token %} 
+        <label for="mobile_number">Phone Number</label>
+        <input type="text" id="mobile_number" pattern="[0-9]{10}" placeholder="0700000000" maxlength="10" minlength="10" name="mobile_number" autofocus required><br><br>
+        <label for="amount">Amount</label>
+        <input type="text" id="amount" value="Ksh. {{order_total}}" name="amount" required readonly><br><br>
+        <button type="submit" id="submit-btn">Pay</button>
+    </form>
+
+    <div id="response"></div>
+</div>
+
+
+<script>
+    const mobileDiv = document.getElementById('mobile_number');
+    {% comment %} const amountDiv = document.getElementById('amount'); {% endcomment %}
+    
+    document.getElementById('stkPush').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const responseDiv = document.getElementById('response');
+    
+        if(mobileDiv !== null){
+            const mobileNumber = mobileDiv.value.replace(mobileDiv.value.charAt(0), '254');
+            //const amount = amountDiv.value;
+            console.log(mobileNumber)
+            //console.log(amount)
+            fetch(this.action, {
+                method: 'POST',
+                body: JSON.stringify({'mobile_number': mobileNumber}),
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                responseDiv.style.display = 'block';
+                responseDiv.innerHTML = `<p>${JSON.stringify(data)}</p>`;
+            })
+            .catch(error => {
+                responseDiv.style.display='block';
+                responseDiv.innerHTML = `<p>${error}</p>`;
+            });
+        }else{
+            responseDiv.style.display='block';
+            responseDiv.innerHTML = "Mobile Number can't be empty!";
+            
+        }       
+    });
+</script>
+
+{% endblock content%}

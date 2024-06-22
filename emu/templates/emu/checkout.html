@@ -48,7 +48,7 @@
                         </div>
                     
                     </div>
-                    <div class="save">
+                    <div class="save" id="save_div">
                         <div class="form-fields">
                             <input type="checkbox" id="save" name="save">
                             <label for="save">Save</label>
@@ -56,10 +56,10 @@
                         
                     </div>
                     {% if default_address %}
-                    <div class="use-default">
+                    <div class="use-default" id="use_default_div">
                         <div class="form-fields">
-                            <input type="checkbox" id="use-default" name="use-default">
-                            <label for="use-default">{{default_address.town|truncatechars:10}}</label>
+                            <input type="checkbox" id="use_default" name="use_default">
+                            <label for="use_default">Use Default Address - {{default_address.town|truncatechars:10}}</label>
                         </div>
                     </div>
                     {% endif %}
@@ -137,6 +137,22 @@
     const paymentDiv = document.getElementById("payment-options-div");
     const checkoutForm = document.getElementById("checkout-form")
     const saveDefault = document.getElementById("save")
+    const useDefault = document.getElementById("use_default")
+    console.log(useDefault)
+
+    if (saveDefault){
+        saveDefault.addEventListener('change', ()=>{
+            if (saveDefault.checked){
+                document.getElementById('use_default_div').innerHTML = ''
+            }
+        })
+    }
+
+    if (useDefault){
+        useDefault.addEventListener('change', ()=>{
+            document.getElementById("save_div").innerHTML = ''
+        })
+    }
 
     let shipping = '{{order.for_shipping}}'
     let total = '{{order.get_total}}'
@@ -175,6 +191,7 @@
             'zipCode': null,
             'country': null,
             'save': null,
+            'useDefault': null,
             
         }
         let paymentOption = checkoutForm.payment_option.value
@@ -184,6 +201,9 @@
             shippingInfo.zipCode = checkoutForm.zip_code.value
             shippingInfo.country = checkoutForm.country.value
             shippingInfo.save = checkoutForm.save.checked
+            if(checkoutForm.use_default){
+                shippingInfo.useDefault = checkoutForm.use_default.checked
+            }
             
         }
 
@@ -194,6 +214,10 @@
 
         console.log(shippingInfo)
         console.log(paymentOption)
+        if(checkoutForm.use_default){
+            console.log(checkoutForm.use_default)
+        }
+       
         let url = '/checkout/'
         fetch(url,{
             method: 'POST',
@@ -208,9 +232,12 @@
         })
         .then((data)=>{
             console.log("Success", data)
-            alert("Transaction completed")
+            {% comment %} alert("Transaction completed") {% endcomment %}
             cart={}
             document.cookie= 'cart='+ JSON.stringify(cart) + ';domian=;path=/'
+            if (paymentOption === 'M'){
+                window.location.href = "{% url 'mpesa:stk-push' %}"
+            }
         })
     }
 </script>
