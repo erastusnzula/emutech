@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from .forms import CheckoutForm, CouponForm
+from .utils import get_coupon
 
 
 class HomePage(View):
@@ -103,3 +104,27 @@ class Checkout(View):
         except ObjectDoesNotExist:
             messages.info(self.request, 'You do not have an active order.')
             return redirect('emu:checkout')
+    def post(self, *args, **kwargs):
+        data = json.loads(self.request.body)
+        print(data)
+        return JsonResponse("Data received", safe=False)
+    
+    
+
+
+
+class AddCoupon(View):
+    def post(self, *args, **kwargs):
+        form = CouponForm(self.request.POST or None)
+        if form.is_valid():
+            try:
+                code = form.cleaned_data.get('code')
+                order = Order.objects.get(user=self.request.user, is_complete=False)
+                order.coupon = get_coupon(self.request, code)
+                order.save()
+                print(order.get_total())
+                messages.info(self.request, 'Successfully added coupon')
+                return redirect('emu:checkout')
+            except:
+                print("error")
+                return redirect('emu:checkout')

@@ -7,7 +7,7 @@
         <h3>Checkout</h3>
     </div>
     <div class="body">
-        <form class="form" action=".">
+        <form class="form" action="." id="checkout-form">
             {% csrf_token %}
             <div class="user-shipping-info">
                 <div class="user-data" id="user-data">
@@ -39,12 +39,12 @@
                     <div class="country-zip-code">
                         <div class="country">
                             <label for="country">Country</label>
-                            {{form.country}}
-                            </select>
+                        {{form.country}}
+                        
                         </div>
                         <div class="zip-code">
                             <label for="zip-code">Zip Code</label>
-                            <input type="text" id="zip-code" name="zip-code" placeholder="1234">
+                            <input type="text" id="zip-code" name="zip_code" placeholder="1234">
                         </div>
                     
                     </div>
@@ -66,12 +66,12 @@
                     
                     
                 </div>
-                <div style="">
+                <div style="" class="payment-options-div" id="payment-options-div">
                     <h3 style="color: blueviolet;">Payment Options</h3>
                     {% for value, name in form.fields.payment_option.choices %}     
                     <div class="payment-options">
                         <div class="form-fields">
-                            <input type="radio" id="{{name}}" name="payment-options" value="{{value}}" required>
+                            <input type="radio" id="{{name}}" name="payment_option" value="{{value}}" required>
                             <label for="{{name}}">{{name}}</label>
                         </div>
                     
@@ -80,9 +80,10 @@
                 </div>
     
             </div>
+            
             <button type="submit">Continue</button>
-           
         </form>
+        
         <div class="cart">
             <div class="header-cart">
                 <h3 style="color: blueviolet;" class="title">Your cart</h3>
@@ -103,8 +104,7 @@
                 {% endfor%}
                {% if order.coupon %}
                 <div class="">
-                    <h5 class="my-0">Promotion code: {{order.coupon.code}}</h5>
-                    <p class="">(${{order.coupon.amount}})</p>
+                    <p class="">Coupon Amount: (${{order.coupon.amount}})</p>
                 </div>
                 
                 {% endif%}
@@ -113,7 +113,8 @@
             </div>
             {% if DISPLAY_COUPON_FORM %}
             <div class="coupon">
-                <form class="coupon-form">
+                <form class="coupon-form" action="{% url 'emu:add-coupon' %}" method="post">
+                    {% csrf_token %}
                     <div class="form-fields">
                         <label for="code"></label>
                         <input type="text" id="code" name="code" placeholder="Promotion code" required>
@@ -133,6 +134,10 @@
 <script>
     const userData = document.getElementById("user-data");
     const shippingInfo = document.getElementById("shipping-info");
+    const paymentDiv = document.getElementById("payment-options-div");
+    const checkoutForm = document.getElementById("checkout-form")
+    const saveDefault = document.getElementById("save")
+
     let shipping = '{{order.for_shipping}}'
     let total = '{{order.get_total}}'
     if(shipping == 'False'){
@@ -142,6 +147,71 @@
 
     if(user != 'AnonymousUser'){
         userData.innerHTML = ''
+    }
+
+    if(user != 'AnonymousUser' && shipping == 'False'){
+        //checkoutForm.style.display = 'none';
+        shippingInfo.innerHTML = '';
+    }
+
+    csrftoken = checkoutForm.getElementsByTagName("input")[0].value;
+    console.log(csrftoken)
+    checkoutForm.addEventListener('submit',(e)=>{
+        e.preventDefault()
+        console.log("Submitting data...")
+        checkoutData()
+    })
+
+    const checkoutData = ()=>{
+        let userInfo = {
+            'name': null,
+            'email': null,
+            'total': total,
+        }
+
+        let shippingInfo={
+            'town': null,
+            'city': null,
+            'zipCode': null,
+            'country': null,
+            'save': null,
+            
+        }
+        let paymentOption = checkoutForm.payment_option.value
+        if(shipping != 'False'){
+            shippingInfo.town = checkoutForm.town.value
+            shippingInfo.city = checkoutForm.city.value
+            shippingInfo.zipCode = checkoutForm.zip_code.value
+            shippingInfo.country = checkoutForm.country.value
+            shippingInfo.save = checkoutForm.save.checked
+            
+        }
+
+        if(user == 'AnonymousUser'){
+            userData.name = checkoutForm.name.value
+            userData.email = checkoutForm.email.value
+        }
+
+        console.log(shippingInfo)
+        console.log(paymentOption)
+        let url = '/checkout/'
+        fetch(url,{
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({"userInfo": userInfo, "shippingInfo": shippingInfo, "paymentOption": paymentOption})
+        })
+        .then((response)=>{
+            return response.json()
+        })
+        .then((data)=>{
+            console.log("Success", data)
+            alert("Transaction completed")
+            cart={}
+            document.cookie= 'cart='+ JSON.stringify(cart) + ';domian=;path=/'
+        })
     }
 </script>
 

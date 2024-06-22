@@ -415,7 +415,7 @@ tr:nth-child(even) {
     margin-top: .8rem;
 }
 
-.checkout .body .form button{
+.checkout .body button{
     margin-top: .8rem;
     width: 100%;
     border-radius: .5rem;
