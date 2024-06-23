@@ -26,7 +26,7 @@
                 </div>
                 <div class="shipping-info" id="shipping-info">
                     <h3 style="color: blueviolet;">Shipping Address</h3>
-                    <div class="town-city">
+                    <div class="town-city" id="towm_city">
                         <div class="form-fields">
                             <label for="town">Town</label>
                             <input type="text" id="town" name="town" placeholder="Town">
@@ -36,7 +36,7 @@
                             <input type="text" id="name" name="city" placeholder="City">
                         </div>
                     </div>
-                    <div class="country-zip-code">
+                    <div class="country-zip-code" id="country_zip_code">
                         <div class="country">
                             <label for="country">Country</label>
                         {{form.country}}
@@ -150,7 +150,10 @@
 
     if (useDefault){
         useDefault.addEventListener('change', ()=>{
-            document.getElementById("save_div").innerHTML = ''
+            document.getElementById("save_div").innerHTML = '';
+            //shippingInfo.innerHTML = ''
+            //document.getElementById("towm_city").innerHTML = '';
+            //document.getElementById("country_zip_code").innerHTML = '';
         })
     }
 
@@ -200,7 +203,10 @@
             shippingInfo.city = checkoutForm.city.value
             shippingInfo.zipCode = checkoutForm.zip_code.value
             shippingInfo.country = checkoutForm.country.value
-            shippingInfo.save = checkoutForm.save.checked
+            if (checkoutForm.save){
+                shippingInfo.save = checkoutForm.save.checked
+            }
+            
             if(checkoutForm.use_default){
                 shippingInfo.useDefault = checkoutForm.use_default.checked
             }

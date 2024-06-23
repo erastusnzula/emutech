@@ -4,7 +4,12 @@
     </div>
     <div class="card-body">
         <p>Name: <span>{{ item.name }}</span></p>
-        <p>Price: ${{ item.price }}</p>
+        {% if item.discount%}
+        <p>Price: ${{ item.item_price }} </p>
+        <p>Discount: {{ item.discount }}%</p>
+        {% else %}
+        <p>Price: ${{ item.item_price }}</p>
+        {% endif %}
     </div>
     <div class="card-footer">
         <a class="update-cart" data-item_id={{item.id}} data-action="add">Add to Cart</a>

@@ -2,7 +2,7 @@
     <th scope="row">{{forloop.counter}}</th>
     <td><img src="{{item.item.get_image_url}}" width='30px' class="cart-card-img-top" alt=""></td>
     <td>{{item.item.name}}</td>
-    <td>${{item.item.price}}</td>
+    <td>${{item.item.item_price}}</td>
     <td class="cart-quantity">
         <div>
             <i data-item_id={{item.item.id}} data-action="remove" class="fa-solid fa-minus update-cart"></i>

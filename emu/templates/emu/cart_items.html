@@ -32,7 +32,11 @@
                 <th scope="row"></th>
                 <td class="cart-total" colspan="4">Total</td>
                 
-                <td>${{order.get_total}}</td>
+                <td>${{order.get_total}}
+                    {% if order.coupon %}
+                    <span> (${{order.coupon.amount}})</span>
+                    {% endif%}
+                </td>
             </tr>
         </table>
     </div>

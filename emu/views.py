@@ -48,22 +48,27 @@ class AddItemToCart(View):
             if order.items.filter(item__id=item.id).exists():
                 if action == 'add':
                     order_item.quantity += 1
+                    messages.info(self.request, f"Successfully increased quantity to - {order_item.quantity}")
                     print("Added")
                 elif action == 'remove':
                     order_item.quantity -= 1
+                    messages.info(self.request, f"Successfully reduced quantity to - {order_item.quantity}")
                     print("Reduced")
                 order_item.save()
                 if order_item.quantity <= 0:
                     order_item.delete()
+                    messages.info(self.request, "Successfully deleted")
                     
                 return JsonResponse("Added successfully", safe=False)
             else:
                 order.items.add(order_item)
+                messages.info(self.request, "Successfully added")
                 return JsonResponse("Added successfully", safe=False)
         else:
             order_date = timezone.now()
             order = Order.objects.create(user=self.request.user)
             order.items.add(order_item)
+            messages.info(self.request, f"Successfully added")
             return JsonResponse("Added successfully", safe=False)
             #return redirect('emu:cart-items')
     

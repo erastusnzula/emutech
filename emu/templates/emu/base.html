@@ -81,9 +81,36 @@
             </ul>
         </div>
     </nav>
+
+    <div class="messages" id="messages" style="">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="message text-center alert alert-{{message.tags}} " id="message">
+           <p> {{message}}</p>
+            <button type="button" class="close" id="close" onClick=closeMessage()>
+                <span>&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
     
     {% block content %}
     {% endblock content %}
+
+    <script>
+        const messageDiv =document.getElementById("message");
+        if(messageDiv){
+            setTimeout(() => {
+            
+                messageDiv.style.display = 'none';
+              }, 5000);
+            const closeMessage = ()=>{ 
+                messageDiv.style.display="none";
+            } 
+        }
+        
+    </script>
     <script src={% static 'emu/js/cart.js' %}></script>
 </body>
 </html>
