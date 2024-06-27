@@ -264,15 +264,15 @@ tr:nth-child(even) {
 }
 
 .checkout{
-    background-color: #f4f4f4;
-    padding: 1rem 10%;
+    background-color: blueviolet;
+    margin: 1rem 10%;
+    border-radius: .5rem;
 }
 
 .checkout .header{
-    text-align: center;
-    margin-bottom: 1rem;
-    color: blueviolet;
-    
+    padding: 0.1rem 1rem;
+    color: #fff; 
+    border-bottom: 1px solid #fff; 
 }
 
 .checkout .body{
@@ -281,25 +281,21 @@ tr:nth-child(even) {
 }
 
 .checkout .body .form{
-    border: 1px solid blueviolet;
-    padding: 1rem;
-    border-radius: .5rem;
+    /* border-left: 1px solid #fff; */
+    color: #fff;
+    margin: 0 .5rem;
 }
 
-.checkout .body .shipping-info{
-    /* border-bottom: 1px solid blueviolet; */
-    padding: 1rem;
-}
 
-.checkout .body .user-data h3{
-   padding: 1rem;
-   border-bottom: 1px solid blueviolet;
-   color: blueviolet;
+.checkout .body .user-data h3, .checkout .body .shipping-info h3{
+   padding: 0 1rem;
+   color: #fff;
+   text-align: center;
 }
 .checkout .body .user-data .name-email{
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid blueviolet;
+    border-bottom: 1px solid #fff;
     padding: 1rem;
 }
 
@@ -310,51 +306,50 @@ tr:nth-child(even) {
 
 .checkout .body .shipping-info .town-city{
     display: flex;
-    justify-content: space-between;
-    gap: 2rem;
+    flex-direction: column;
+    justify-content: space-around;
+    border-bottom: 1px solid #fff;
+    padding: 1rem;
    
 }
 
 .checkout .body .shipping-info .country-zip-code{
     display: flex;
-    justify-content: space-between;
-    gap: 2rem;
-    padding: 1rem 0;
-    border-bottom: 1px solid blueviolet;
+    justify-content: space-around;
+    border-bottom: 1px solid #fff;
+    padding: 1rem;
+    gap: 1rem;
 }
 
-.checkout .body .shipping-info .save{
-    display: inline-flex;
-    padding: 1rem 0;
-}
-
-.checkout .body .shipping-info .save .form-fields input{
-    margin: 0;
-}
-
-.checkout .body .shipping-info .save .form-fields{
+.checkout .body .shipping-info .save-use{
     display: flex;
-    align-items: center;
-    gap: .5rem;    
+    justify-content: space-between;
+    border-bottom: 1px solid #fff;
 }
 
-.checkout .body .shipping-info .use-default{
-    display: inline-flex;
+.checkout .body .shipping-info .save-use .save .form-fields,
+.checkout .body .shipping-info .save-use .use-default .form-fields
+{
+   display: flex;
+   align-items: center;
+   gap: 1rem;
 }
 
+.checkout .body .shipping-info .save .form-fields input,
 .checkout .body .shipping-info .use-default input{
     margin: 0;
 }
 
-.checkout .body .shipping-info .use-default .form-fields{
-    display: inline-flex;
-    align-items: center;
-    padding: 0;
+
+.checkout .body .payment-options-div{
+    margin-top: .5rem;
+    
+    border-bottom: 1px solid #fff;
+    
 }
 
 .checkout .body .payment-options{
     margin-top: .5rem;
-    
 }
 
 .checkout .body .payment-options .form-fields input{
@@ -369,6 +364,7 @@ tr:nth-child(even) {
 
 .checkout .body .cart{
    padding: 1rem;
+   background-color: #f4f4f4;
 }
 
 .checkout .body .cart .header-cart{
@@ -441,15 +437,23 @@ tr:nth-child(even) {
     margin-top: .8rem;
 }
 
-.checkout .body button{
+.checkout .body .submit-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.checkout .body .btn{
     margin-top: .8rem;
-    width: 100%;
+    width: 95%;
     border-radius: .5rem;
     cursor: pointer;
-    padding: .8rem 0;
-    border: none;
-    color: #fff;
-    background-color: blueviolet;
+    padding: 1rem 0;
+    border: 1px solid blueviolet;
+    color: blueviolet;
+    margin-bottom: 1rem;
+    background-color: #fff;
 }
 
 .checkout .body .form button:hover{

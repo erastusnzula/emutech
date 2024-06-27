@@ -4,7 +4,7 @@
 
 <div class="checkout">
     <div class="header">
-        <h3>Checkout</h3>
+        <h1>Your Checkout</h1>
     </div>
     <div class="body">
         <form class="form" action="." id="checkout-form">
@@ -25,7 +25,7 @@
                     
                 </div>
                 <div class="shipping-info" id="shipping-info">
-                    <h3 style="color: blueviolet;">Shipping Address</h3>
+                    <h3>Shipping Address</h3>
                     <div class="town-city" id="towm_city">
                         <div class="form-fields">
                             <label for="town">Town</label>
@@ -48,26 +48,29 @@
                         </div>
                     
                     </div>
-                    <div class="save" id="save_div">
-                        <div class="form-fields">
-                            <input type="checkbox" id="save" name="save">
-                            <label for="save">Save</label>
+                    <div class="save-use">
+                        <div class="save" id="save_div">
+                            <div class="form-fields">
+                                <input type="checkbox" id="save" name="save">
+                                <label for="save">Save Address</label>
+                            </div>
+                            
                         </div>
-                        
-                    </div>
-                    {% if default_address %}
-                    <div class="use-default" id="use_default_div">
-                        <div class="form-fields">
-                            <input type="checkbox" id="use_default" name="use_default">
-                            <label for="use_default">Use Default Address - {{default_address.town|truncatechars:10}}</label>
+                        {% if default_address %}
+                      
+                        <div class="use-default" id="use_default_div">
+                            <div class="form-fields">
+                                <input type="checkbox" id="use_default" name="use_default">
+                                <label for="use_default">Use Default Address - {{default_address.town}}</label>
+                            </div>
                         </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
                     
                     
                 </div>
                 <div style="" class="payment-options-div" id="payment-options-div">
-                    <h3 style="color: blueviolet;">Payment Options</h3>
+                    <h3>Payment Options</h3>
                     {% for value, name in form.fields.payment_option.choices %}     
                     <div class="payment-options">
                         <div class="form-fields">
@@ -80,13 +83,15 @@
                 </div>
     
             </div>
+            <div class="submit-btn">
+                <button type="submit" class="btn">Continue</button>
+            </div>
             
-            <button type="submit">Continue</button>
         </form>
         
         <div class="cart">
             <div class="header-cart">
-                <h3 style="color: blueviolet;" class="title">Your cart</h3>
+                <h3 class="title">Your cart</h3>
                 <h3 class="number_of_items">{{order.get_cart_items}}</h3>
             </div>
            
@@ -238,7 +243,7 @@
         })
         .then((data)=>{
             console.log("Success", data)
-            {% comment %} alert("Transaction completed") {% endcomment %}
+            alert("Transaction completed")
             cart={}
             document.cookie= 'cart='+ JSON.stringify(cart) + ';domian=;path=/'
             if (paymentOption === 'M'){
