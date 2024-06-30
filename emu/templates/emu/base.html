@@ -5,9 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MURSTECH{%block title%}|Home{% endblock %}</title> 
-    <link rel="stylesheet" type="text/css" href="{% static 'emu/css/styles.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'mpesa/css/styles.css' %}" />
+    <title>MURSTECH{%block title%}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'emu/css/styles.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'mpesa/css/styles.css' %}"/>
     <script src="https://kit.fontawesome.com/4605777c76.js" crossorigin="anonymous"></script>
 
     <script>
@@ -54,63 +54,63 @@
 </head>
 
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <a id="logo" href="/">MURSTECH</a>
-            <input type="checkbox" id="check-box"/>
-            <label for="check-box" class="menu-icon">
-                <i class="fa-solid fa-bars" id="menu-icon"></i>
-                <i class="fa-solid fa-x" id="close-icon"></i>
-            </label>
-            <ul class="nav-items">
-                <li class="nav-item">
-                    <a class="nav-link" href="#" style="--i:0;">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'mpesa:stk-push' %}" style="--i:1;">Mpesa</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'emu:item-list' %}" style="--i:2;">Shop</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" style="--i:3;">Contact Us</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'emu:add-to-cart' %}" style="--i:4;">Cart <span class="cart-badge">{{request.user|cart_items_count}}</span></a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="messages" id="messages" style="">
-        {% if messages %}
-        {% for message in messages %}
-        <div class="message text-center alert alert-{{message.tags}} " id="message">
-           <p class=""> {{message}}</p>
-            <button type="button" class="close" id="close" onClick=closeMessage()>
-                <span>&times;</span>
-            </button>
-        </div>
-        {% endfor %}
-        {% endif %}
+<nav class="navbar">
+    <div class="nav-container">
+        <a id="logo" href="/">MURSTECH</a>
+        <input type="checkbox" id="check-box"/>
+        <label for="check-box" class="menu-icon">
+            <i class="fa-solid fa-bars" id="menu-icon"></i>
+            <i class="fa-solid fa-x" id="close-icon"></i>
+        </label>
+        <ul class="nav-items">
+            <li class="nav-item">
+                <a class="nav-link" href="#" style="--i:0;">About</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'mpesa:stk-push' %}" style="--i:1;">Mpesa</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'emu:item-list' %}" style="--i:2;">Shop</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" style="--i:3;">Contact Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'emu:add-to-cart' %}" style="--i:4;">Cart <span class="cart-badge">{{request.user|cart_items_count}}</span></a>
+            </li>
+        </ul>
     </div>
-    
-    {% block content %}
-    {% endblock content %}
+</nav>
 
-    <script>
-        const messageDiv =document.getElementById("message");
-        if(messageDiv){
-            setTimeout(() => {
-            
-                messageDiv.style.display = 'none';
-              }, 2000);
-            const closeMessage = ()=>{ 
-                messageDiv.style.display="none";
-            } 
+<div class="messages" id="messages" style="">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="message text-center alert alert-{{message.tags}} " id="message">
+        <p class=""> {{message}}</p>
+        <button type="button" class="close" id="close" onClick=closeMessage()>
+            <span>&times;</span>
+        </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+
+{% block content %}
+{% endblock content %}
+
+<script>
+    const messageDiv =document.getElementById("message");
+    if(messageDiv){
+        setTimeout(() => {
+
+            messageDiv.style.display = 'none';
+          }, 2000);
+        const closeMessage = ()=>{
+            messageDiv.style.display="none";
         }
-        
-    </script>
-    <script src={% static 'emu/js/cart.js' %}></script>
+    }
+
+</script>
+<script src="{% static 'emu/js/cart.js' %}"></script>
 </body>
 </html>

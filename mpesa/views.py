@@ -1,10 +1,12 @@
 import json
+
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
-from django.http import JsonResponse
+
+from emu.models import Order
 from .models import STKPushTransaction
 from .utils import initiate_stk_push, get_conversion_rate
-from emu.models import  Order
 
 
 class STKPush(View):
@@ -14,10 +16,8 @@ class STKPush(View):
             order_total = int(order.get_total())
             order_total = str(get_conversion_rate(order_total))
             return render(self.request, 'mpesa/stk_push.html', {'order_total': order_total})
-        
-        
 
-    def post(self,request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         data = json.loads(self.request.body)
         mobile_number = data['mobile_number']
         if self.request.user.is_authenticated:
@@ -26,7 +26,6 @@ class STKPush(View):
             amount = get_conversion_rate(order_total)
         response = initiate_stk_push(mobile_number=int(mobile_number), amount=int(amount))
         return JsonResponse(response)
-        
 
 
 class CallBack(View):

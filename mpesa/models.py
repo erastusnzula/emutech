@@ -11,4 +11,3 @@ class STKPushTransaction(models.Model):
     reference = models.CharField(max_length=255)
     transaction_date = models.CharField(max_length=255)
     balance = models.CharField(max_length=255)
-

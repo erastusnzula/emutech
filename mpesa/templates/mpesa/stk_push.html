@@ -8,9 +8,10 @@
     <h1>Lipa na MPESA</h1>
     <img src="{% static 'mpesa/images/mpesa.png' %}" alt="">
     <form id="stkPush" method="post" action="{% url 'mpesa:stk-push' %}">
-        {% csrf_token %} 
+        {% csrf_token %}
         <label for="mobile_number">Phone Number</label>
-        <input type="text" id="mobile_number" pattern="[0-9]{10}" placeholder="0700000000" maxlength="10" minlength="10" name="mobile_number" autofocus required><br><br>
+        <input type="text" id="mobile_number" pattern="[0-9]{10}" placeholder="0700000000" maxlength="10" minlength="10"
+               name="mobile_number" autofocus required><br><br>
         <label for="amount">Amount</label>
         <input type="text" id="amount" value="Ksh. {{order_total}}" name="amount" required readonly><br><br>
         <button type="submit" id="submit-btn">Pay</button>

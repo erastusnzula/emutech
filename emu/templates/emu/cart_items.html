@@ -4,8 +4,6 @@
 {% block content %}
 
 
-   
-
 <div class="cart-container">
     <div class="cart-header">
         <div class="cart-total-items">
@@ -14,8 +12,8 @@
         </div>
         <div class="cart-link">
             <a href="{% url 'emu:item-list' %}">Continue Shopping</a>
-        <a href="{% url 'emu:checkout' %}">Checkout</a>
-        </div>    
+            <a href="{% url 'emu:checkout' %}">Checkout</a>
+        </div>
     </div>
     <div class="cart-body">
         <table>
@@ -33,7 +31,7 @@
             <tr>
                 <th scope="row"></th>
                 <td class="cart-total" colspan="4">Total</td>
-                
+
                 <td>${{order.get_total}}
                     {% if order.coupon %}
                     <span> (${{order.coupon.amount}})</span>

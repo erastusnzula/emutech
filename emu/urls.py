@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 
-app_name='emu'
+app_name = 'emu'
 urlpatterns = [
     path('', views.HomePage.as_view(), name='home-page'),
     path('item_list/', views.ItemList.as_view(), name='item-list'),

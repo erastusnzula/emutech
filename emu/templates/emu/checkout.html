@@ -23,7 +23,7 @@
                             <input type="email" id="email" name="email" placeholder="Email address">
                         </div>
                     </div>
-                    
+
                 </div>
                 <div class="shipping-info" id="shipping-info">
                     <h3>Shipping Address</h3>
@@ -34,20 +34,20 @@
                         </div>
                         <div class="form-fields">
                             <label for="city">City</label>
-                            <input type="text" id="name" name="city" placeholder="City">
+                            <input type="text" id="city" name="city" placeholder="City">
                         </div>
                     </div>
                     <div class="country-zip-code" id="country_zip_code">
                         <div class="country">
-                            <label for="country">Country</label>
-                        {{form.country}}
-                        
+                            <label>Country</label>
+                            {{form.country}}
+
                         </div>
                         <div class="zip-code">
                             <label for="zip-code">Zip Code</label>
                             <input type="text" id="zip-code" name="zip_code" placeholder="1234">
                         </div>
-                    
+
                     </div>
                     <div class="save-use">
                         <div class="save" id="save_div">
@@ -55,10 +55,10 @@
                                 <input type="checkbox" id="save" name="save">
                                 <label for="save">Save Address</label>
                             </div>
-                            
+
                         </div>
                         {% if default_address %}
-                      
+
                         <div class="use-default" id="use_default_div">
                             <div class="form-fields">
                                 <input type="checkbox" id="use_default" name="use_default">
@@ -67,35 +67,35 @@
                         </div>
                         {% endif %}
                     </div>
-                    
-                    
+
+
                 </div>
                 <div style="" class="payment-options-div" id="payment-options-div">
                     <h3>Select Payment Method</h3>
-                    {% for value, name in form.fields.payment_option.choices %}     
+                    {% for value, name in form.fields.payment_option.choices %}
                     <div class="payment-options">
                         <div class="form-fields">
                             <input type="radio" id="{{name}}" name="payment_option" value="{{value}}" required>
                             <label for="{{name}}">{{name}}</label>
                         </div>
-                    
+
                     </div>
                     {% endfor %}
                 </div>
-    
+
             </div>
             <div class="submit-btn">
                 <button type="submit" class="btn">Continue</button>
             </div>
-            
+
         </form>
-        
+
         <div class="cart">
             <div class="header-cart">
                 <h3 class="title">Your cart</h3>
                 <h3 class="number_of_items">{{order.get_cart_items}}</h3>
             </div>
-           
+
             <div class="items">
                 {% for item in order.items.all %}
                 <div class="item">
@@ -108,13 +108,13 @@
                     </div>
                 </div>
                 {% endfor%}
-               {% if order.coupon %}
+                {% if order.coupon %}
                 <div class="">
                     <p class="">Coupon Amount: (${{order.coupon.amount}})</p>
                 </div>
-                
+
                 {% endif%}
-                
+
                 <h3 class="total">Total: ${{order.get_total}}</h3>
             </div>
             {% if DISPLAY_COUPON_FORM %}
@@ -128,11 +128,11 @@
                     <div class="coupon-submit">
                         <button type="submit">Redeem</button>
                     </div>
-                    
+
                 </form>
             </div>
             {% endif %}
-            
+
         </div>
     </div>
 

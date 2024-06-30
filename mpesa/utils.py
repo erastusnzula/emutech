@@ -1,8 +1,9 @@
 import base64
 from datetime import datetime
+
 import requests
-from requests.auth import HTTPBasicAuth
 from django.conf import settings
+from requests.auth import HTTPBasicAuth
 
 
 def get_access_token():
@@ -43,6 +44,7 @@ def initiate_stk_push(mobile_number, amount):
     response = requests.post(api_url, json=data, headers=headers)
     response.raise_for_status()
     return response.json()
+
 
 def get_conversion_rate(amount):
     api_url = 'https://api.exchangerate-api.com/v4/latest/USD'

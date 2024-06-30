@@ -1,14 +1,12 @@
-from django.shortcuts import render, redirect
-from django.views import View
-from .models import Item, CartItem, Order, ShippingAddress,Category, Coupon
-from django.http import JsonResponse
-import json
-from django.utils import timezone
-from django.core.exceptions import ObjectDoesNotExist
-from django.contrib import messages
-from .forms import CheckoutForm, CouponForm
 import random
 import string
+
+from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import redirect
+
+from .models import Order, Coupon
+
 
 def get_coupon(request, code):
     try:
@@ -17,9 +15,11 @@ def get_coupon(request, code):
     except ObjectDoesNotExist:
         messages.info(request, 'This coupon does not exist.')
         return redirect('src:checkout')
-  
+
+
 def create_ref_code():
-    return "".join(random.choices(string.ascii_lowercase + string.digits, k=10))  
+    return "".join(random.choices(string.ascii_lowercase + string.digits, k=10))
+
 
 def complete_order(request):
     order = Order.objects.get(user=request.user, is_complete=False)
@@ -31,4 +31,4 @@ def complete_order(request):
     order.transaction_id = create_ref_code()
     order.save()
     messages.success(request,
-                        f"Order: ({create_ref_code()} ) successfully submitted. Thank you for shopping with us.")
+                     f"Order: ({create_ref_code()} ) successfully submitted. Thank you for shopping with us.")
