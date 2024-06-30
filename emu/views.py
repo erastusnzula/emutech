@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from .forms import CheckoutForm, CouponForm
-from .utils import get_coupon
+from .utils import get_coupon, complete_order
 
 
 class HomePage(View):
@@ -71,13 +71,19 @@ class AddItemToCart(View):
             messages.info(self.request, f"Successfully added")
             return JsonResponse("Added successfully", safe=False)
             #return redirect('emu:cart-items')
+            
+        
     
     
 
 class CartItems(View):
     def get(self, *args, **kwargs):
         try:
-            order = Order.objects.get(user=self.request.user, is_complete=False)
+            if self.request.user.is_authenticated:
+                order = Order.objects.get(user=self.request.user, is_complete=False)
+                
+            else:
+                order = {}
             context = {'order': order}
             return render(self.request, 'emu/cart_items.html', context)
         except ObjectDoesNotExist:
@@ -88,32 +94,31 @@ class CartItems(View):
 class Checkout(View):
     def get(self, *args, **kwargs):
         try:
-            order = Order.objects.get(user=self.request.user, is_complete=False)
-            print(order.for_shipping)
             form = CheckoutForm()
-            context = {
-                'form': form,
-                'order': order,
-                'couponform': CouponForm(),
-                'DISPLAY_COUPON_FORM': True
-            }
-            shipping_address_qs = ShippingAddress.objects.filter(
-                user=self.request.user,
-                default = True
-            )
-            if shipping_address_qs.exists():
-                context.update({'default_address': shipping_address_qs[0]})
+            if self.request.user.is_authenticated:
+                order = Order.objects.get(user=self.request.user, is_complete=False) 
+                context = {'form': form, 'order': order,'couponform': CouponForm(), 'DISPLAY_COUPON_FORM': True}
+                shipping_address_qs = ShippingAddress.objects.filter(
+                    user=self.request.user,
+                    default = True
+                )
+                if shipping_address_qs.exists():
+                    context.update({'default_address': shipping_address_qs[0]})
 
-            return render(self.request, 'emu/checkout.html', context)
+                return render(self.request, 'emu/checkout.html', context)
+            else:
+                order= {}
+                context = {'form': form, 'order': order,'couponform': CouponForm(), 'DISPLAY_COUPON_FORM': True}
+                return render(self.request, 'emu/checkout.html', context)
 
         except ObjectDoesNotExist:
             messages.info(self.request, 'You do not have an active order.')
             return redirect('emu:checkout')
+        
     def post(self, *args, **kwargs):
         data = json.loads(self.request.body)
         order = Order.objects.get(user=self.request.user, is_complete=False)
         use_default = data['shippingInfo']['useDefault']
-        print(f"IN THIS{use_default}")
         if use_default == True:
             
             address_qs = ShippingAddress.objects.filter(
@@ -147,11 +152,8 @@ class Checkout(View):
                 shipping_address.save()
                 order.shipping_address = shipping_address
                 order.save()    
-        
+        complete_order(self.request)
         return JsonResponse("Data received", safe=False)
-    
-    
-
 
 
 class AddCoupon(View):

@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMU TECH</title> 
+    <title>MURSTECH{%block title%}|Home{% endblock %}</title> 
     <link rel="stylesheet" type="text/css" href="{% static 'emu/css/styles.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'mpesa/css/styles.css' %}" />
     <script src="https://kit.fontawesome.com/4605777c76.js" crossorigin="anonymous"></script>
@@ -86,7 +86,7 @@
         {% if messages %}
         {% for message in messages %}
         <div class="message text-center alert alert-{{message.tags}} " id="message">
-           <p> {{message}}</p>
+           <p class=""> {{message}}</p>
             <button type="button" class="close" id="close" onClick=closeMessage()>
                 <span>&times;</span>
             </button>
@@ -104,7 +104,7 @@
             setTimeout(() => {
             
                 messageDiv.style.display = 'none';
-              }, 5000);
+              }, 2000);
             const closeMessage = ()=>{ 
                 messageDiv.style.display="none";
             } 

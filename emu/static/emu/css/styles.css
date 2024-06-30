@@ -82,7 +82,7 @@
 }
 
 .messages{
-    margin-top: 6rem; 
+    padding-top: 5rem; 
     color: blueviolet;
 }
 
@@ -91,7 +91,8 @@
     justify-content: space-between;
     background-color: rgb(0, 255, 102); 
     padding: .1rem 1rem; 
-    border-radius: .5rem
+    border-radius: .5rem;
+    margin: .5rem;
 
 }
 
@@ -172,7 +173,7 @@
 }
 
 .cart-container {
-    padding: 4.5rem 10%;
+    padding: 0rem 10%;
     overflow-x: auto;
 }
 
@@ -313,6 +314,10 @@ tr:nth-child(even) {
    
 }
 
+.checkout .body .shipping-info .town-city input{
+    margin-bottom: .5rem;
+}
+
 .checkout .body .shipping-info .country-zip-code{
     display: flex;
     justify-content: space-around;
@@ -343,7 +348,6 @@ tr:nth-child(even) {
 
 .checkout .body .payment-options-div{
     margin-top: .5rem;
-    
     border-bottom: 1px solid #fff;
     
 }

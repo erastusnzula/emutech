@@ -1,5 +1,6 @@
 {% extends "emu/base.html" %}
 {% load static %}
+{%block title%}|Checkout{% endblock %}
 {% block content %}
 
 <div class="checkout">
@@ -70,7 +71,7 @@
                     
                 </div>
                 <div style="" class="payment-options-div" id="payment-options-div">
-                    <h3>Payment Options</h3>
+                    <h3>Select Payment Method</h3>
                     {% for value, name in form.fields.payment_option.choices %}     
                     <div class="payment-options">
                         <div class="form-fields">
@@ -249,6 +250,8 @@
             if (paymentOption === 'M'){
                 window.location.href = "{% url 'mpesa:stk-push' %}"
             }
+            window.location.href = '{% url 'emu:item-list' %}'
+            
         })
     }
 </script>
