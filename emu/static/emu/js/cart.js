@@ -31,7 +31,23 @@ for (let i=0; i<removeItemBtn.length; i++){
 
 const updateGuestOrder = (itemID, action)=>{
     console.log("Guest User")
-    console.log(itemID, action)
+    if(action == 'add'){
+        if(cart[itemID]== undefined){
+            cart[itemID] = {'quantity': 1}
+        }else{
+            cart[itemID]['quantity'] += 1
+        }
+    }
+
+    if (action == 'remove'){
+        cart[itemID]['quantity'] -= 1
+        if( cart[itemID]['quantity'] <= 0){
+            delete cart[itemID]
+        }
+    }
+    console.log(cart)
+    document.cookie= 'cart='+ JSON.stringify(cart) + ';domian=;path=/'
+    
 }
 
 const updateCart= (itemID, action)=>{

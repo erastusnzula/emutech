@@ -9,11 +9,13 @@ from django.views import View
 
 from .forms import CheckoutForm, CouponForm
 from .models import Item, CartItem, Order, ShippingAddress
-from .utils import get_coupon, complete_order
+from .utils import get_coupon, complete_order, update_guest_cart
+from .templatetags.cart import update_cart_items
 
 
 class HomePage(View):
     def get(self, *args, **kwargs):
+        update_guest_cart(self.request)
         context = {}
         return render(self.request, 'emu/home_page.html', context)
 
@@ -21,12 +23,14 @@ class HomePage(View):
 class ItemList(View):
     def get(self, *args, **kwargs):
         items = Item.objects.all()
+        update_guest_cart(self.request)
         context = {'items': items}
         return render(self.request, 'emu/item_list.html', context)
 
 
 class ItemView(View):
     def get(self, request, id):
+        
         item = Item.objects.get(id=id)
         context = {
             'item': item
@@ -82,10 +86,14 @@ class CartItems(View):
         try:
             if self.request.user.is_authenticated:
                 order = Order.objects.get(user=self.request.user, is_complete=False)
-
+                
             else:
                 order = {}
+                update_guest_cart(self.request)
+                    
+
             context = {'order': order}
+            
             return render(self.request, 'emu/cart_items.html', context)
         except ObjectDoesNotExist:
             messages.warning(self.request, 'You do not have an active order.')
@@ -109,6 +117,11 @@ class Checkout(View):
                 return render(self.request, 'emu/checkout.html', context)
             else:
                 order = {}
+                try:
+                    cart = json.loads(self.request.COOKIES['cart'])
+                except:
+                    cart = {}
+                update_cart_items.items = len(cart)
                 context = {'form': form, 'order': order, 'couponform': CouponForm(), 'DISPLAY_COUPON_FORM': True}
                 return render(self.request, 'emu/checkout.html', context)
 
