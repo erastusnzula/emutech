@@ -23,6 +23,7 @@
                             <input type="email" id="email" name="email" placeholder="Email address">
                         </div>
                     </div>
+                  
 
                 </div>
                 <div class="shipping-info" id="shipping-info">
@@ -75,7 +76,7 @@
                     {% for value, name in form.fields.payment_option.choices %}
                     <div class="payment-options">
                         <div class="form-fields">
-                            <input type="radio" id="{{name}}" name="payment_option" value="{{value}}" required>
+                            <input type="radio" id="{{name}}" name="payment_option" value="{{value}}">
                             <label for="{{name}}">{{name}}</label>
                         </div>
 
@@ -84,7 +85,10 @@
                 </div>
 
             </div>
-            <div class="submit-btn">
+            <div class="proceed-btn" id="proceed-btn">
+                <button type="submit" class="btn">Proceed to Pay</button>
+            </div>
+            <div class="pay-btn" id="pay-btn">
                 <button type="submit" class="btn">Continue</button>
             </div>
 
@@ -97,17 +101,36 @@
             </div>
 
             <div class="items">
-                {% for item in order.items.all %}
-                <div class="item">
-                    <div class="quantity-name">
-                        <h4>{{item.quantity}} x {{item.item.name}}</h4>
-                        <small>{{item.item.description}}</small>
+                <div id="authorised">
+                    {% for item in order.items.all %}
+                    <div class="item">
+                        <div class="quantity-name">
+                            <h4>{{item.quantity}} x {{item.item.name}}</h4>
+                            <small>{{item.item.description}}</small>
+                        </div>
+                        <div class="price">
+                            <h4>${{item.get_price}}</h4>
+                        </div>
                     </div>
-                    <div class="price">
-                        <h4>${{item.get_price}}</h4>
-                    </div>
+                    {% endfor%}
                 </div>
-                {% endfor%}
+                {% if is_guest %}
+                <div id="not-authorised">
+                    {% for item in order.items %}
+                    <div class="item">
+                        <div class="quantity-name">
+                            <h4>{{item.quantity}} x {{item.item.name}}</h4>
+                            <small>{{item.item.description}}</small>
+                        </div>
+                        <div class="price">
+                            <h4>${{item.get_price}}</h4>
+                        </div>
+                    </div>
+                    {% endfor%}
+                </div>
+                {% endif %}
+              
+                
                 {% if order.coupon %}
                 <div class="">
                     <p class="">Coupon Amount: (${{order.coupon.amount}})</p>
@@ -141,6 +164,8 @@
     const userData = document.getElementById("user-data");
     const shippingInfo = document.getElementById("shipping-info");
     const paymentDiv = document.getElementById("payment-options-div");
+    const proceedBtn = document.getElementById('proceed-btn');
+    const payBtn = document.getElementById('pay-btn');
     const checkoutForm = document.getElementById("checkout-form")
     const saveDefault = document.getElementById("save")
     const useDefault = document.getElementById("use_default")
@@ -180,12 +205,25 @@
     }
 
     csrftoken = checkoutForm.getElementsByTagName("input")[0].value;
-    console.log(csrftoken)
+    proceedBtn.addEventListener('click',()=>{
+        paymentDiv.style.display = 'block';
+        payBtn.style.display = 'flex';
+        shippingInfo.style.display='none';
+        userData.style.display = 'none';
+        proceedBtn.style.display = 'none';
+    })
+
+    payBtn.addEventListener('click', ()=>{
+        checkoutData()
+    })
+    
     checkoutForm.addEventListener('submit',(e)=>{
         e.preventDefault()
         console.log("Submitting data...")
-        checkoutData()
+        //checkoutData()
     })
+
+
 
     const checkoutData = ()=>{
         let userInfo = {
@@ -220,11 +258,11 @@
         }
 
         if(user == 'AnonymousUser'){
-            userData.name = checkoutForm.name.value
-            userData.email = checkoutForm.email.value
+            userInfo.name = checkoutForm.name.value
+            userInfo.email = checkoutForm.email.value
         }
 
-        console.log(shippingInfo)
+        console.log(userInfo)
         console.log(paymentOption)
         if(checkoutForm.use_default){
             console.log(checkoutForm.use_default)

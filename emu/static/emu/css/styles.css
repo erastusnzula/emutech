@@ -1,3 +1,5 @@
+
+
 .navbar{
     position: fixed;
     top: 0;
@@ -266,12 +268,12 @@ tr:nth-child(even) {
 
 .checkout{
     background-color: blueviolet;
-    margin: 1rem 10%;
+    margin: 0rem 5%;
     border-radius: .5rem;
 }
 
 .checkout .header{
-    padding: 0.1rem 1rem;
+    padding: 0 1rem;
     color: #fff; 
     border-bottom: 1px solid #fff; 
 }
@@ -284,12 +286,10 @@ tr:nth-child(even) {
 .checkout .body .form{
     /* border-left: 1px solid #fff; */
     color: #fff;
-    margin: 0 .5rem;
 }
 
 
 .checkout .body .user-data h3, .checkout .body .shipping-info h3{
-   padding: 0 1rem;
    color: #fff;
    text-align: center;
 }
@@ -297,7 +297,8 @@ tr:nth-child(even) {
     display: flex;
     justify-content: space-between;
     border-bottom: 1px solid #fff;
-    padding: 1rem;
+    gap: 1rem;
+    padding: 0.2rem .5rem;
 }
 
 .checkout .body .user-data .name-email .form-fields{
@@ -307,10 +308,10 @@ tr:nth-child(even) {
 
 .checkout .body .shipping-info .town-city{
     display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+    flex-direction: row;
+    justify-content: space-between;
     border-bottom: 1px solid #fff;
-    padding: 1rem;
+    padding: 0 .5rem;
    
 }
 
@@ -322,7 +323,7 @@ tr:nth-child(even) {
     display: flex;
     justify-content: space-around;
     border-bottom: 1px solid #fff;
-    padding: 1rem;
+    padding: 0 .5rem;
     gap: 1rem;
 }
 
@@ -348,6 +349,8 @@ tr:nth-child(even) {
 
 .checkout .body .payment-options-div{
     margin-top: .5rem;
+    padding: 0 5rem;
+    display: none;
     border-bottom: 1px solid #fff;
     
 }
@@ -441,30 +444,32 @@ tr:nth-child(even) {
     margin-top: .8rem;
 }
 
-.checkout .body .submit-btn{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
+.checkout .body .proceed-btn button{
+    padding: 1rem 5rem;
+    
+}
+.checkout .body .pay-btn{
+    display: none;
+    
 }
 
 .checkout .body .btn{
     margin-top: .8rem;
-    width: 95%;
+    width: 100%;
+    font-size: 18px;
     border-radius: .5rem;
     cursor: pointer;
-    padding: 1rem 0;
-    border: 1px solid blueviolet;
+    padding: .5rem 0;
+    border: none;
     color: blueviolet;
     margin-bottom: 1rem;
-    background-color: #fff;
+    background-color: rgb(20, 245, 20);
 }
 
 .checkout .body .form button:hover{
     color: blueviolet;
     background-color: #fff;
-    border: 1px solid blueviolet;
-    padding: .9rem;
+    
 }
 
 @media (max-width: 992px) {

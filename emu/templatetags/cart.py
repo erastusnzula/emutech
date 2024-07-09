@@ -12,7 +12,8 @@ def cart_items_count(user):
         qs = Order.objects.filter(user=user, is_complete=False)
         if qs.exists():
             return qs[0].items.count()
-    # return 0
     else:
         return update_cart_items.items
+    return 0
+    
         

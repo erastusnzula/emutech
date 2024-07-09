@@ -47,6 +47,7 @@ const updateGuestOrder = (itemID, action)=>{
     }
     console.log(cart)
     document.cookie= 'cart='+ JSON.stringify(cart) + ';domian=;path=/'
+    location.reload()
     
 }
 

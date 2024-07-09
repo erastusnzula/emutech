@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.shortcuts import reverse
 from django.conf import settings
+from django.contrib.auth.models import User
 import itertools
 import random
 
@@ -14,6 +15,13 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+    
+class GuestCustomer(models.Model):
+    #user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    username = models.CharField(max_length=200, blank=True, null=True)
+    email = models.EmailField()
+    password = models.CharField(max_length=255, blank=True, null=True)
+ 
 
 
 class Item(models.Model):
@@ -36,7 +44,7 @@ class Item(models.Model):
             return round(price - discount, 2)
         return self.price
 
-    @property
+  
     def get_image_url(self):
         try:
             url = self.image.url
@@ -90,7 +98,7 @@ class Order(models.Model):
     items = models.ManyToManyField(CartItem, related_name='order_items')
     created_on = models.DateTimeField(auto_now_add=True)
     is_complete = models.BooleanField(default=False)
-    shipping_addess = models.ForeignKey('ShippingAddress', related_name='shipping_address', on_delete=models.SET_NULL,
+    shipping_address = models.ForeignKey('ShippingAddress', related_name='shipping_address', on_delete=models.SET_NULL,
                                         blank=True, null=True)
     coupon = models.ForeignKey('Coupon', on_delete=models.SET_NULL, blank=True, null=True)
 

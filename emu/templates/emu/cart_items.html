@@ -25,9 +25,19 @@
                 <th scope="col">Quantity</th>
                 <th scope="col">Total</th>
             </tr>
-            {% for item in order.items.all%}
-            {% include 'emu/snippets/cart_list.html' %}
-            {% endfor %}
+            
+            <div id="authorised">
+                {% for item in order.items.all%}
+                {% include 'emu/snippets/cart_list.html' %}
+                {% endfor %}
+            </div>
+           {% if is_guest %}
+            <div id="not-authorised">
+                {% for item in order.items%}
+                {% include 'emu/snippets/cart_list.html' %}
+                {% endfor %}
+            </div>
+           {% endif%}
             <tr>
                 <th scope="row"></th>
                 <td class="cart-total" colspan="4">Total</td>
