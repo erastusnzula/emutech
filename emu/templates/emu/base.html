@@ -53,7 +53,7 @@
 <body>
 <nav class="navbar">
     <div class="nav-container">
-        <a id="logo" href="/">MURSTECH Solutions</a>
+        <a id="logo" href="/">MURSTECH</a>
         <input type="checkbox" id="check-box"/>
         <label for="check-box" class="menu-icon">
             <i class="fa-solid fa-bars" id="menu-icon"></i>
@@ -61,7 +61,7 @@
         </label>
         <ul class="nav-items">
             <li class="nav-item">
-                <a class="nav-link" href="#" style="--i:0;">About</a>
+                <a class="nav-link" href="{% url 'emu:about' %}" style="--i:0;">About</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'mpesa:stk-push' %}" style="--i:1;">Mpesa</a>
@@ -70,11 +70,20 @@
                 <a class="nav-link" href="{% url 'emu:item-list' %}" style="--i:2;">Shop</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" style="--i:3;">Contact Us</a>
+                <a class="nav-link" href="{% url 'emu:contact' %}" style="--i:3;">Contact Us</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'emu:add-to-cart' %}" style="--i:4;">Cart <span class="cart-badge">{{request.user|cart_items_count}}</span></a>
             </li>
+            {% if request.user.is_authenticated %} 
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'emu:login' %}" style="--i:3;">Sign In</a>
+            </li>
+            {%else%}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'emu:register' %}" style="--i:3;">Sign Up</a>
+            </li>
+            {%endif%}
         </ul>
     </div>
 </nav>

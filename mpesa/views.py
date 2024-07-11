@@ -2,7 +2,9 @@ import json
 
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.core.exceptions import ObjectDoesNotExist
 from django.views import View
+from django.contrib import messages
 
 from emu.models import Order
 from .models import STKPushTransaction
@@ -11,11 +13,21 @@ from .utils import initiate_stk_push, get_conversion_rate
 
 class STKPush(View):
     def get(self, request, *args, **kwargs):
+        no_order=False
         if self.request.user.is_authenticated:
-            order = Order.objects.get(user=self.request.user, is_complete=False)
-            order_total = int(order.get_total())
-            order_total = str(get_conversion_rate(order_total))
-            return render(self.request, 'mpesa/stk_push.html', {'order_total': order_total})
+            try:
+                no_order=False
+                order = Order.objects.get(user=self.request.user, is_complete=False)
+                order_total = int(order.get_total())
+                order_total = str(get_conversion_rate(order_total))
+            except ObjectDoesNotExist:
+                messages.info(self.request, "You do not have an active order to pay")
+                no_order = True
+                order_total = 0
+        else:
+            order_total = 10
+        
+        return render(self.request, 'mpesa/stk_push.html', {'order_total': order_total, 'no_order': no_order})
 
     def post(self, request, *args, **kwargs):
         data = json.loads(self.request.body)

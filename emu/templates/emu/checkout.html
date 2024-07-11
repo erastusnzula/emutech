@@ -288,7 +288,13 @@
             if (paymentOption === 'M'){
                 window.location.href = "{% url 'mpesa:stk-push' %}"
             }
-            window.location.href = '{% url 'emu:item-list' %}'
+            if (paymentOption === 'P'){
+                window.location.href = "{% url 'emu:paypal' %}"
+            }
+            if (paymentOption === 'S'){
+                window.location.href = "{% url 'emu:stripe' %}"
+            }
+            //window.location.href = "{% url 'emu:item-list' %}"
             
         })
     }

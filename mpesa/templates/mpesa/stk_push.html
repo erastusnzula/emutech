@@ -3,7 +3,8 @@
 {% load static %}
 
 <!-- templates/mpesa/stk_push_form.html -->
-
+{% if no_order %}
+{%else%}
 <div class="mpesa">
     <h1>Lipa na MPESA</h1>
     <img src="{% static 'mpesa/images/mpesa.png' %}" alt="">
@@ -18,12 +19,14 @@
     </form>
 
     <div id="response"></div>
+   
 </div>
+{%endif%}
 
 
 <script>
     const mobileDiv = document.getElementById('mobile_number');
-    {% comment %} const amountDiv = document.getElementById('amount'); {% endcomment %}
+    //const amountDiv = document.getElementById('amount'); 
     
     document.getElementById('stkPush').addEventListener('submit', function(event) {
         event.preventDefault();

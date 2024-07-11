@@ -243,3 +243,32 @@ class AddCoupon(View):
             except:
                 print("error")
                 return redirect('emu:checkout')
+
+class PaypalPayment(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'emu/paypal_payment.html')
+    
+
+class StripePayment(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'emu/stripe_payment.html')
+    
+class Register(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'emu/register.html')
+    
+class Login(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'emu/login.html')
+    
+class Logout(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'emu/logout.html')
+    
+class Contact(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'emu/contact.html')
+    
+class About(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'emu/about.html')
