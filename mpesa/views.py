@@ -9,6 +9,7 @@ from django.contrib import messages
 from emu.models import Order
 from .models import STKPushTransaction
 from .utils import initiate_stk_push, get_conversion_rate
+from emu.utils import update_guest_cart
 
 
 class STKPush(View):
@@ -21,13 +22,18 @@ class STKPush(View):
                 order_total = int(order.get_total())
                 order_total = str(get_conversion_rate(order_total))
             except ObjectDoesNotExist:
-                messages.info(self.request, "You do not have an active order to pay")
                 no_order = True
-                order_total = 0
+                messages.info(self.request, "You do not have an active order to pay")
+              
         else:
-            order_total = 10
+            order = {'get_total': 0}
+            guest = update_guest_cart(self.request)  
+            total = guest['order']['get_total']
+            order['get_total']= total
+            order_total = get_conversion_rate(total)
+        context = {'order_total': order_total, 'no_order': no_order}
         
-        return render(self.request, 'mpesa/stk_push.html', {'order_total': order_total, 'no_order': no_order})
+        return render(self.request, 'mpesa/stk_push.html', context)
 
     def post(self, request, *args, **kwargs):
         data = json.loads(self.request.body)
@@ -36,6 +42,13 @@ class STKPush(View):
             order = Order.objects.get(user=self.request.user, is_complete=False)
             order_total = int(order.get_total())
             amount = get_conversion_rate(order_total)
+        else:
+            order = {'get_total': 0}
+            guest = update_guest_cart(self.request)  
+            total = guest['order']['get_total']
+            order['get_total']= total
+            amount = get_conversion_rate(total)
+
         response = initiate_stk_push(mobile_number=int(mobile_number), amount=int(amount))
         return JsonResponse(response)
 

@@ -173,7 +173,7 @@ class Checkout(View):
                     order.shipping_address = shipping_address
                     order.save()
                     
-            complete_order(self.request, self.request.user)
+            #complete_order(self.request, self.request.user)
            
         else:
             print(self.request.COOKIES)
@@ -225,7 +225,7 @@ class Checkout(View):
                     order.shipping_address = shipping_address
                     order.save() 
            
-            complete_order(self.request, user)
+            #complete_order(self.request, user)
         return JsonResponse("Order completed successfully", safe=False)
 
 class AddCoupon(View):
@@ -246,7 +246,20 @@ class AddCoupon(View):
 
 class PaypalPayment(View):
     def get(self, *args, **kwargs):
-        return render(self.request, 'emu/paypal_payment.html')
+        if self.request.user.is_authenticated:
+            order = Order.objects.get(user=self.request.user, is_complete=False)
+           
+        else:
+            order = {'get_total': 0}
+            guest = update_guest_cart(self.request)  
+            total = guest['order']['get_total']
+            order['get_total']= total
+            
+        context = {'order': order}
+        return render(self.request, 'emu/paypal_payment.html', context)
+    def post(self, *args, **kwargs):
+        complete_order(self.request, self.request.user)
+        return JsonResponse("Success Paypal", safe=False)
     
 
 class StripePayment(View):

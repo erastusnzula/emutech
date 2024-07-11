@@ -1,5 +1,6 @@
 const addToCartBtn = document.getElementsByClassName('update-cart');
 const removeItemBtn = document.getElementsByClassName('remove-item');
+const viewItem = document.getElementsByClassName('view-item');
 
 for (let i=0; i<addToCartBtn.length; i++){
     addToCartBtn[i].addEventListener('click',()=>{
@@ -13,6 +14,19 @@ for (let i=0; i<addToCartBtn.length; i++){
         }
         
     })
+}
+
+for (let i=0; i<viewItem.length; i++){
+    viewItem[i].addEventListener('click', ()=>{
+        let itemID = viewItem[i].dataset.item_id;
+        let action = viewItem[i].dataset.action;
+        console.log(action)
+        if(action === 'view'){
+            window.location.href = "/item_view/" + itemID
+        }
+        
+    })
+    
 }
 
 for (let i=0; i<removeItemBtn.length; i++){

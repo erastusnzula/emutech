@@ -2,5 +2,55 @@
 {% load static %}
 {%block title%}|Paypal{% endblock %}
 {% block content %}
-<p>Paypal</p>
+
+
+<div class="paypal">
+    <div class="paypal-header">
+        <h3>Pay With PayPal</h3>
+    </div>
+    <div class="paypal-body">
+        <div id="paypal-button-container"></div>
+        <!-- Initialize the JS-SDK -->
+        <script
+        src="https://www.paypal.com/sdk/js?client-id=AXlyFbZTrjF5uGWv73qO-FWxGFytAISla6_Ct8TW4ITLHq4urnB7nZ6TKizO8fegywSnCV6ujntASJue&buyer-country=US&currency=USD&components=buttons&disable-funding=credit"></script>
+        <script>
+            window.paypal
+                .Buttons({
+                    style: {
+                        shape: "rect",
+                        layout: "vertical",
+                        color: "blue",
+                        label: "paypal",
+                    } ,
+                    createOrder: function(data, actions) {
+                        return actions.order.create({
+                            purchase_units: [{
+                            "amount": {
+                                "currency_code": "USD",
+                                "value": parseFloat("{{order.get_total}}").toFixed(2)
+                            }
+                            }]
+                        });
+                        } ,
+                    onApprove: function(data) {
+                        var url = "{% url 'emu:paypal' %}"
+                        return fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json',
+                            'X-CSRFToken': csrftoken,
+                        },
+                        body: JSON.stringify({
+                            orderID: data
+                        })
+                        }).then(function () {
+                            cart={}
+                            document.cookie= 'cart='+ JSON.stringify(cart) + ';domian=;path=/'
+                            location.href = "{% url 'emu:item-list' %}";
+                        })
+                    },
+                    }).render('#paypal-button-container');
+        </script>
+    </div>
+</div>
 {% endblock %}

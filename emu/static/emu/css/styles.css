@@ -149,7 +149,7 @@
 
 .card .card-header img{
     width: 90%;
-    height: 50%;
+    height: 150px;
     margin: 5px 0 0 0;
     border-radius: 5px;
     cursor: pointer;
@@ -470,6 +470,16 @@ tr:nth-child(even) {
     color: blueviolet;
     background-color: #fff;
     
+}
+
+.paypal{
+    display: flex;
+    flex-direction: column;
+
+}
+
+.paypal .paypal-body{
+    width: 100%;
 }
 
 @media (max-width: 992px) {

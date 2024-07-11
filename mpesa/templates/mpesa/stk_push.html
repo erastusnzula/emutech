@@ -50,6 +50,8 @@
             .then(data => {
                 responseDiv.style.display = 'block';
                 responseDiv.innerHTML = `<p>${JSON.stringify(data)}</p>`;
+                cart={}
+                document.cookie= 'cart='+ JSON.stringify(cart) + ';domian=;path=/'
             })
             .catch(error => {
                 responseDiv.style.display='block';

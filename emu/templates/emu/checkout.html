@@ -282,9 +282,9 @@
         })
         .then((data)=>{
             console.log("Success", data)
-            alert("Transaction completed")
-            cart={}
-            document.cookie= 'cart='+ JSON.stringify(cart) + ';domian=;path=/'
+            //alert("Transaction completed")
+            //cart={}
+            //document.cookie= 'cart='+ JSON.stringify(cart) + ';domian=;path=/'
             if (paymentOption === 'M'){
                 window.location.href = "{% url 'mpesa:stk-push' %}"
             }

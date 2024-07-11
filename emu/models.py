@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 import itertools
 import random
+from PIL import Image
 
 
 class Category(models.Model):
@@ -36,6 +37,15 @@ class Item(models.Model):
     seller = models.CharField(max_length=255, blank=True, null=True)
     created_on = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='emu/items', blank=True, null=True)
+    thumbnail = models.ImageField(upload_to='emu/items', blank=True, null=True)
+
+
+    # def resize_images(self):
+    #     img = Image.open(self.thumbnail.path)
+    #     if img.height > 300 or img.width > 300:
+    #         size = (300, 300)
+    #         img.thumbnail(size)
+    #         img.save(self.thumbnail.path)
 
     def item_price(self):
         if self.discount:
@@ -48,6 +58,13 @@ class Item(models.Model):
     def get_image_url(self):
         try:
             url = self.image.url
+        except:
+            url = ''
+        return url
+    
+    def get_thumbnail_url(self):
+        try:
+            url = self.thumbnail.url
         except:
             url = ''
         return url
@@ -69,6 +86,7 @@ class Item(models.Model):
         if not self.pk:
             self._get_slug()
         super().save(*args, **kwargs)
+        
 
     def get_absolute_url(self):
         return reverse("item-list", kwargs={"id": self.id})
