@@ -473,13 +473,21 @@ tr:nth-child(even) {
 }
 
 .paypal{
+    margin: 5rem auto;
+    border: blueviolet solid 1px;
+    border-radius: 1rem;
     display: flex;
+    width: 800px;
+    height: 50vh;
+    align-items: center;
+    justify-content: center;
     flex-direction: column;
 
 }
 
 .paypal .paypal-body{
-    width: 100%;
+    width: 600px;
+    align-items: center;
 }
 
 @media (max-width: 992px) {
