@@ -206,19 +206,11 @@
 
     csrftoken = checkoutForm.getElementsByTagName("input")[0].value;
     proceedBtn.addEventListener('click',()=>{
-        if (!checkoutForm.use_default && shipping == 'True'){
-            if(checkoutForm.town.value && checkoutForm.city.value){
-                paymentDiv.style.display = 'block';
-                payBtn.style.display = 'flex';
-                shippingInfo.style.display='none';
-                userData.style.display = 'none';
-                proceedBtn.style.display = 'none';
-            }else{
-                alert("Fill the empty fields to proceed.")
-            }
-        }
-
-        
+        paymentDiv.style.display = 'block';
+        payBtn.style.display = 'flex';
+        shippingInfo.style.display='none';
+        userData.style.display = 'none';
+        proceedBtn.style.display = 'none';
     })
 
     payBtn.addEventListener('click', ()=>{

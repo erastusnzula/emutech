@@ -10,4 +10,3 @@ class STKPushTransaction(models.Model):
     mobile_number = models.CharField(max_length=255)
     reference = models.CharField(max_length=255)
     transaction_date = models.CharField(max_length=255)
-    balance = models.CharField(max_length=255)

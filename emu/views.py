@@ -8,12 +8,14 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views import View
 from django.contrib.auth.models import User
+from django.contrib.auth import login
 
 from .forms import CheckoutForm, CouponForm
 from .models import Item, CartItem, Order, ShippingAddress, GuestCustomer
 from .utils import get_coupon, complete_order, update_guest_cart
 from .templatetags.cart import update_cart_items
 
+getGuestUserCredentials = {"user":["username", "email","password"]}
 
 class HomePage(View):
     def get(self, *args, **kwargs):
@@ -187,7 +189,12 @@ class Checkout(View):
             customer.save()
             user, created = User.objects.get_or_create(username=username, email=email)
             user.password = password
+            getGuestUserCredentials["user"][0] = username
+            getGuestUserCredentials['user'][1] = email
+            getGuestUserCredentials['user'][2]=password
+            print(getGuestUserCredentials)
             user.save()
+            
             guest = update_guest_cart(self.request)  
             items = guest['order']['items']
             order = Order.objects.create(user=user)
@@ -224,7 +231,7 @@ class Checkout(View):
                     shipping_address.save()
                     order.shipping_address = shipping_address
                     order.save() 
-           
+            
             #complete_order(self.request, user)
         return JsonResponse("Order completed successfully", safe=False)
 
@@ -258,7 +265,13 @@ class PaypalPayment(View):
         context = {'order': order}
         return render(self.request, 'emu/paypal_payment.html', context)
     def post(self, *args, **kwargs):
-        complete_order(self.request, self.request.user)
+        print('Paid with paypal')
+        if self.request.user.is_authenticated:
+            user = self.request.user
+            complete_order(self.request, user)
+        else:
+           print("to be updated")
+           
         return JsonResponse("Success Paypal", safe=False)
     
 

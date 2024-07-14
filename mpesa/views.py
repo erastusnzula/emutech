@@ -1,15 +1,16 @@
 import json
 
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.views import View
 from django.contrib import messages
+from datetime import datetime
 
 from emu.models import Order
 from .models import STKPushTransaction
 from .utils import initiate_stk_push, get_conversion_rate
-from emu.utils import update_guest_cart
+from emu.utils import update_guest_cart, complete_order
 
 
 class STKPush(View):
@@ -21,6 +22,8 @@ class STKPush(View):
                 order = Order.objects.get(user=self.request.user, is_complete=False)
                 order_total = int(order.get_total())
                 order_total = str(get_conversion_rate(order_total))
+                context = {'order_total': order_total, 'no_order': no_order}
+                return render(self.request, 'mpesa/stk_push.html', context)
             except ObjectDoesNotExist:
                 no_order = True
                 messages.info(self.request, "You do not have an active order to pay")
@@ -31,9 +34,9 @@ class STKPush(View):
             total = guest['order']['get_total']
             order['get_total']= total
             order_total = get_conversion_rate(total)
-        context = {'order_total': order_total, 'no_order': no_order}
+            context = {'order_total': order_total, 'no_order': no_order}
+            return render(self.request, 'mpesa/stk_push.html', context)
         
-        return render(self.request, 'mpesa/stk_push.html', context)
 
     def post(self, request, *args, **kwargs):
         data = json.loads(self.request.body)
@@ -55,17 +58,30 @@ class STKPush(View):
 
 class CallBack(View):
     def post(self, *args, **kwargs):
-        data = json.loads(self.request.body.decode('utf-8'))
-        stk_push_transaction = STKPushTransaction()
-        stk_push_transaction.merchant_id = data['Body']['stkCallback']['MerchantRequestID'],
-        stk_push_transaction.checkout_id = data['Body']['stkCallback']['CheckoutRequestID'],
-        stk_push_transaction.transaction_date = data['Body']['stkCallback']['CallbackMetadata']['Item'][3]['Value'],
-        stk_push_transaction.reference = data['Body']['stkCallback']['CallbackMetadata']['Item'][1]['Value'],
-        stk_push_transaction.result_code = data['Body']['stkCallback']['ResultCode'],
-        stk_push_transaction.result_description = data['Body']['stkCallback']['ResultDesc'],
-        stk_push_transaction.mobile_number = data['Body']['stkCallback']['CallbackMetadata']['Item'][4]['Value']
-        stk_push_transaction.amount = data['Body']['stkCallback']['CallbackMetadata']['Item'][0]['Value'],
-        stk_push_transaction.balance = data['Body']['stkCallback']['CallbackMetadata']['Item'][2]['Value'],
-        stk_push_transaction.save()
-        print(data)
-        return JsonResponse({"ResultCode": 0, "ResultDesc": "Accepted"})
+        try:
+            data = json.loads(self.request.body.decode('utf-8'))
+            stk_push_transaction = STKPushTransaction()
+            stk_push_transaction.merchant_id = data['Body']['stkCallback']['MerchantRequestID'],
+            stk_push_transaction.checkout_id = data['Body']['stkCallback']['CheckoutRequestID'],
+            stk_push_transaction.transaction_date = data['Body']['stkCallback']['CallbackMetadata']['Item'][3]['Value'],
+            stk_push_transaction.reference = data['Body']['stkCallback']['CallbackMetadata']['Item'][1]['Value'],
+            stk_push_transaction.result_code = data['Body']['stkCallback']['ResultCode'],
+            stk_push_transaction.result_description = data['Body']['stkCallback']['ResultDesc'],
+            stk_push_transaction.mobile_number = data['Body']['stkCallback']['CallbackMetadata']['Item'][4]['Value']
+            stk_push_transaction.amount = data['Body']['stkCallback']['CallbackMetadata']['Item'][0]['Value'],
+            stk_push_transaction.save()
+            complete_order(self.request, self.request.user)
+            return JsonResponse({'ResultCode': 0, 'ResultDesc': 'Accepted'})
+        except json.JSONDecodeError:
+            return JsonResponse({'ResultCode': 1, 'ResultDesc': 'Failed to decode JSON'})
+        except Exception as e:
+            return JsonResponse({'ResultCode': 1, 'ResultDesc': str(e)})
+   
+
+class TransactionSuccess(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'mpesa/success.html')
+    
+class FailedTransaction(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'mpesa/failed.html')
