@@ -273,7 +273,7 @@ tr:nth-child(even) {
 }
 
 .checkout .header{
-    padding: 0 1rem;
+    padding: 0.5rem 1rem;
     color: #fff; 
     border-bottom: 1px solid #fff; 
 }
@@ -309,6 +309,7 @@ tr:nth-child(even) {
 .checkout .body .shipping-info .town-city{
     display: flex;
     flex-direction: row;
+    gap: 1rem;
     justify-content: space-between;
     border-bottom: 1px solid #fff;
     padding: 0 .5rem;
