@@ -120,7 +120,6 @@ USE_TZ = True
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    # config('NGROK_URL')
 ]
 SECURE_CROSS_ORIGIN_OPENER_POLICY='same-origin-allow-popups'
 
@@ -141,6 +140,7 @@ MPESA_SHORTCODE = config('MPESA_SHORTCODE')
 MPESA_PASSKEY = config('MPESA_PASSKEY')
 MPESA_ENVIRONMENT = 'sandbox'  # or 'production'
 MPESA_CALLBACK_URL = config('MPESA_CALLBACK_URL')
+PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

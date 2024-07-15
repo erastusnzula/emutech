@@ -9,13 +9,14 @@ from django.utils import timezone
 from django.views import View
 from django.contrib.auth.models import User
 from django.contrib.auth import login
+from django.conf import settings
 
 from .forms import CheckoutForm, CouponForm
 from .models import Item, CartItem, Order, ShippingAddress, GuestCustomer
 from .utils import get_coupon, complete_order, update_guest_cart
 from .templatetags.cart import update_cart_items
 
-getGuestUserCredentials = {"user":["username", "email","password"]}
+guest_order_slug = []
 
 class HomePage(View):
     def get(self, *args, **kwargs):
@@ -189,15 +190,13 @@ class Checkout(View):
             customer.save()
             user, created = User.objects.get_or_create(username=username, email=email)
             user.password = password
-            getGuestUserCredentials["user"][0] = username
-            getGuestUserCredentials['user'][1] = email
-            getGuestUserCredentials['user'][2]=password
-            print(getGuestUserCredentials)
             user.save()
             
             guest = update_guest_cart(self.request)  
             items = guest['order']['items']
             order = Order.objects.create(user=user)
+            
+            
             for i in items:
                 item = Item.objects.get(id=i['item']['id'])
                 order_item, created = CartItem.objects.get_or_create(item=item, user=user, is_complete=False)
@@ -231,7 +230,10 @@ class Checkout(View):
                     shipping_address.save()
                     order.shipping_address = shipping_address
                     order.save() 
-            
+            customer.order_slug = order.order_slug
+            guest_order_slug.append(order.order_slug)
+            customer.save()
+            print(f"Order slug: {order.order_slug}")
             #complete_order(self.request, user)
         return JsonResponse("Order completed successfully", safe=False)
 
@@ -252,7 +254,11 @@ class AddCoupon(View):
                 return redirect('emu:checkout')
 
 class PaypalPayment(View):
+    
     def get(self, *args, **kwargs):
+        paypal_client_id = settings.PAYPAL_CLIENT_ID
+        
+     
         if self.request.user.is_authenticated:
             order = Order.objects.get(user=self.request.user, is_complete=False)
            
@@ -262,7 +268,7 @@ class PaypalPayment(View):
             total = guest['order']['get_total']
             order['get_total']= total
             
-        context = {'order': order}
+        context = {'order': order, 'paypal_client_id': paypal_client_id}
         return render(self.request, 'emu/paypal_payment.html', context)
     def post(self, *args, **kwargs):
         print('Paid with paypal')
@@ -270,7 +276,14 @@ class PaypalPayment(View):
             user = self.request.user
             complete_order(self.request, user)
         else:
-           print("to be updated")
+            print("to be updated")
+            quest_customer = GuestCustomer.objects.get(order_slug=guest_order_slug[-1])
+            print(quest_customer)
+            guest_username = quest_customer.username
+            guest_email = quest_customer.email
+            user = User.objects.get(username=guest_username, email=guest_email)
+            complete_order(self.request,user )
+            del guest_order_slug[:]
            
         return JsonResponse("Success Paypal", safe=False)
     

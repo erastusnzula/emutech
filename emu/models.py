@@ -22,6 +22,8 @@ class GuestCustomer(models.Model):
     username = models.CharField(max_length=200, blank=True, null=True)
     email = models.EmailField()
     password = models.CharField(max_length=255, blank=True, null=True)
+    order_slug = models.CharField(max_length=255, blank=True, null=True)
+    
  
 
 
@@ -119,10 +121,28 @@ class Order(models.Model):
     shipping_address = models.ForeignKey('ShippingAddress', related_name='shipping_address', on_delete=models.SET_NULL,
                                         blank=True, null=True)
     coupon = models.ForeignKey('Coupon', on_delete=models.SET_NULL, blank=True, null=True)
+    order_slug = models.SlugField(unique=True, editable=False, blank=True, default="", max_length=5)
 
+    
+        
+    def _get_order_slug(self):
+        max_length = self._meta.get_field('order_slug').max_length
+        value = random.randint(1, 10000)  # self.name[:max_length]
+        slug_candidate = slug_original = slugify(value, allow_unicode=True)
+        for i in itertools.count(1):
+            if not Order.objects.filter(order_slug=slug_candidate).exists():
+                break
+            slug_candidate = '{}-{}'.format(slug_original, (i + 1))
+        self.order_slug = slug_candidate
+        
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self._get_order_slug()
+        super().save(*args, **kwargs)
+        
     class Meta:
         ordering = ['-created_on']
-
+        
     def get_total(self):
         total = 0
         for item in self.items.all():

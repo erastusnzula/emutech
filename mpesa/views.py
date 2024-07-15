@@ -6,12 +6,15 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views import View
 from django.contrib import messages
 from datetime import datetime
+from django.contrib.auth.models import User
 
 from emu.models import Order
 from .models import STKPushTransaction
 from .utils import initiate_stk_push, get_conversion_rate
 from emu.utils import update_guest_cart, complete_order
+from emu.models import GuestCustomer
 
+guest_order_slug = []
 
 class STKPush(View):
     def get(self, request, *args, **kwargs):
@@ -70,7 +73,18 @@ class CallBack(View):
             stk_push_transaction.mobile_number = data['Body']['stkCallback']['CallbackMetadata']['Item'][4]['Value']
             stk_push_transaction.amount = data['Body']['stkCallback']['CallbackMetadata']['Item'][0]['Value'],
             stk_push_transaction.save()
-            complete_order(self.request, self.request.user)
+            if self.request.user.is_authenticated:
+                user = self.request.user
+                complete_order(self.request, user)
+            else:
+                print("to be updated mpesa side")
+                # quest_customer = GuestCustomer.objects.get(order_slug=guest_order_slug[-1])
+                # print(quest_customer)
+                # guest_username = quest_customer.username
+                # guest_email = quest_customer.email
+                # user = User.objects.get(username=guest_username, email=guest_email)
+                # complete_order(self.request,user )
+                # del guest_order_slug[:]
             return JsonResponse({'ResultCode': 0, 'ResultDesc': 'Accepted'})
         except json.JSONDecodeError:
             return JsonResponse({'ResultCode': 1, 'ResultDesc': 'Failed to decode JSON'})
