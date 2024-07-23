@@ -1,6 +1,8 @@
 from django import forms
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 PAYMENT_OPTION = (
     ('M', 'Mpesa'),
@@ -27,3 +29,17 @@ class CouponForm(forms.Form):
         'aria - label': "Recipient's username",
         'aria - describedby': "basic-addon2"
     }))
+    
+class SignUpForm(UserCreationForm):
+    #email = forms.EmailField(help_text="Enter a valid Email Address")
+    class Meta:
+        model = User
+        fields = ('username', 'password1', 'password2')
+
+class SignInForm(AuthenticationForm):
+    username = forms.CharField(max_length=255, help_text="Enter Your Username")
+    password = forms.CharField(max_length=255,widget=forms.PasswordInput, help_text="Enter Your Password")
+    class Meta:
+        model = User
+        fields = ('username', 'password')
+    

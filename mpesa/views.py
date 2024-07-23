@@ -13,11 +13,14 @@ from .models import STKPushTransaction
 from .utils import initiate_stk_push, get_conversion_rate
 from emu.utils import update_guest_cart, complete_order
 from emu.models import GuestCustomer
+from emu.views import guest_order_customers, guest_order_slug
 
-guest_order_slug = []
+
 
 class STKPush(View):
     def get(self, request, *args, **kwargs):
+        print(guest_order_slug)
+        print(guest_order_customers)
         no_order=False
         if self.request.user.is_authenticated:
             try:
@@ -78,13 +81,15 @@ class CallBack(View):
                 complete_order(self.request, user)
             else:
                 print("to be updated mpesa side")
-                # quest_customer = GuestCustomer.objects.get(order_slug=guest_order_slug[-1])
-                # print(quest_customer)
-                # guest_username = quest_customer.username
-                # guest_email = quest_customer.email
-                # user = User.objects.get(username=guest_username, email=guest_email)
-                # complete_order(self.request,user )
-                # del guest_order_slug[:]
+                quest_customer = GuestCustomer.objects.get(order_slug=guest_order_slug[-1], username=guest_order_customers[0], email=guest_order_customers[1])
+                print(quest_customer)
+                guest_username = quest_customer.username
+                guest_email = quest_customer.email
+                user = User.objects.get(username=guest_username, email=guest_email)
+                complete_order(self.request,user )
+                del guest_order_slug[:]
+                del guest_order_customers[:]
+                print(f"customer {guest_order_customers}")
             return JsonResponse({'ResultCode': 0, 'ResultDesc': 'Accepted'})
         except json.JSONDecodeError:
             return JsonResponse({'ResultCode': 1, 'ResultDesc': 'Failed to decode JSON'})

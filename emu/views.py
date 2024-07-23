@@ -8,15 +8,17 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views import View
 from django.contrib.auth.models import User
-from django.contrib.auth import login
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.forms import UserCreationForm
 from django.conf import settings
 
-from .forms import CheckoutForm, CouponForm
+from .forms import CheckoutForm, CouponForm, SignUpForm, SignInForm
 from .models import Item, CartItem, Order, ShippingAddress, GuestCustomer
 from .utils import get_coupon, complete_order, update_guest_cart
 from .templatetags.cart import update_cart_items
 
 guest_order_slug = []
+guest_order_customers= []
 
 class HomePage(View):
     def get(self, *args, **kwargs):
@@ -192,6 +194,9 @@ class Checkout(View):
             user.password = password
             user.save()
             
+            guest_order_customers.append(username)
+            guest_order_customers.append(email)
+            
             guest = update_guest_cart(self.request)  
             items = guest['order']['items']
             order = Order.objects.create(user=user)
@@ -277,13 +282,15 @@ class PaypalPayment(View):
             complete_order(self.request, user)
         else:
             print("to be updated")
-            quest_customer = GuestCustomer.objects.get(order_slug=guest_order_slug[-1])
+            quest_customer = GuestCustomer.objects.get(order_slug=guest_order_slug[-1], username=guest_order_customers[0], email=guest_order_customers[1])
             print(quest_customer)
             guest_username = quest_customer.username
             guest_email = quest_customer.email
             user = User.objects.get(username=guest_username, email=guest_email)
             complete_order(self.request,user )
             del guest_order_slug[:]
+            del guest_order_customers[:]
+            print(f"customer {guest_order_customers}")
            
         return JsonResponse("Success Paypal", safe=False)
     
@@ -292,17 +299,46 @@ class StripePayment(View):
     def get(self, *args, **kwargs):
         return render(self.request, 'emu/stripe_payment.html')
     
-class Register(View):
+class Register(View):   
     def get(self, *args, **kwargs):
-        return render(self.request, 'emu/register.html')
+        sign_up_form = SignUpForm()
+        context = {'sign_up_form': sign_up_form}
+        return render(self.request, 'emu/register.html', context)
+        
+    def post(self, *args, **kwargs):
+        sign_up_form = SignUpForm(data=self.request.POST)
+        if sign_up_form.is_valid():
+            new_user = sign_up_form.save()
+            login(self.request, new_user)
+            return redirect('emu:item-list')
+        else:
+            context = {'sign_up_form': sign_up_form}
+            return render(self.request, 'emu/register.html', context)   
+        
     
 class Login(View):
     def get(self, *args, **kwargs):
-        return render(self.request, 'emu/login.html')
+        sign_in_form = SignInForm()
+        context = {'sign_in_form': sign_in_form}
+        return render(self.request, 'emu/login.html', context)
     
-class Logout(View):
+    def post(self,*args, **kwargs):
+        sign_in_form = SignInForm(data=self.request.POST)
+        if sign_in_form.is_valid():
+            username = sign_in_form.cleaned_data.get('username')
+            password = sign_in_form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            login(self.request, user)
+            return redirect('emu:item-list')
+            
+        else:
+            context = {'sign_in_form': sign_in_form}
+            return render(self.request, 'emu/login.html', context) 
+    
+class LogoutUser(View):
     def get(self, *args, **kwargs):
-        return render(self.request, 'emu/logout.html')
+        logout(self.request)
+        return redirect('emu:login')
     
 class Contact(View):
     def get(self, *args, **kwargs):
