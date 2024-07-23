@@ -31,10 +31,10 @@ class CouponForm(forms.Form):
     }))
     
 class SignUpForm(UserCreationForm):
-    #email = forms.EmailField(help_text="Enter a valid Email Address")
+    email = forms.EmailField(help_text="Enter a valid Email Address")
     class Meta:
         model = User
-        fields = ('username', 'password1', 'password2')
+        fields = ('username', 'email', 'password1', 'password2')
 
 class SignInForm(AuthenticationForm):
     username = forms.CharField(max_length=255, help_text="Enter Your Username")

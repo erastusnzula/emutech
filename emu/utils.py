@@ -70,3 +70,5 @@ def update_guest_cart(request):
     
         return {'order': order}
        
+class get_next:
+    next = ''

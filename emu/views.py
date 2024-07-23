@@ -14,7 +14,7 @@ from django.conf import settings
 
 from .forms import CheckoutForm, CouponForm, SignUpForm, SignInForm
 from .models import Item, CartItem, Order, ShippingAddress, GuestCustomer
-from .utils import get_coupon, complete_order, update_guest_cart
+from .utils import get_coupon, complete_order, update_guest_cart, get_next
 from .templatetags.cart import update_cart_items
 
 guest_order_slug = []
@@ -301,9 +301,15 @@ class StripePayment(View):
     
 class Register(View):   
     def get(self, *args, **kwargs):
-        sign_up_form = SignUpForm()
-        context = {'sign_up_form': sign_up_form}
-        return render(self.request, 'emu/register.html', context)
+        if not self.request.user.is_authenticated:
+            sign_up_form = SignUpForm()
+            context = {'sign_up_form': sign_up_form}
+            return render(self.request, 'emu/register.html', context)
+        else:
+            logout(self.request)
+            sign_up_form = SignUpForm()
+            context = {'sign_up_form': sign_up_form}
+            return render(self.request, 'emu/register.html', context)
         
     def post(self, *args, **kwargs):
         sign_up_form = SignUpForm(data=self.request.POST)
@@ -314,22 +320,39 @@ class Register(View):
         else:
             context = {'sign_up_form': sign_up_form}
             return render(self.request, 'emu/register.html', context)   
-        
+    
     
 class Login(View):
-    def get(self, *args, **kwargs):
-        sign_in_form = SignInForm()
-        context = {'sign_in_form': sign_in_form}
-        return render(self.request, 'emu/login.html', context)
     
+    def get(self, *args, **kwargs):
+        print(self.request.user)
+        get_next.next = self.request.GET.get('next')
+        print(self.request.GET.get('next'))
+        if not self.request.user.is_authenticated:
+            sign_in_form = SignInForm()
+            context = {'sign_in_form': sign_in_form}
+           
+            return render(self.request, 'emu/login.html', context)
+        else:
+            logout(self.request)
+            sign_in_form = SignInForm()
+            context = {'sign_in_form': sign_in_form}
+            messages.success(self.request, "Successfully signed out. Sign In again")
+            return render(self.request, 'emu/login.html', context)
+        
     def post(self,*args, **kwargs):
         sign_in_form = SignInForm(data=self.request.POST)
         if sign_in_form.is_valid():
             username = sign_in_form.cleaned_data.get('username')
             password = sign_in_form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
+            print(f"Next: {get_next.next}")
             login(self.request, user)
-            return redirect('emu:item-list')
+            if get_next.next:
+                return redirect(get_next.next)
+            else:
+                return redirect('emu:item-list')
+        
             
         else:
             context = {'sign_in_form': sign_in_form}
