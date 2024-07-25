@@ -1,11 +1,10 @@
-from django.db import models
-from django.utils.text import slugify
-from django.shortcuts import reverse
-from django.conf import settings
-from django.contrib.auth.models import User
 import itertools
 import random
-from PIL import Image
+
+from django.conf import settings
+from django.db import models
+from django.shortcuts import reverse
+from django.utils.text import slugify
 
 
 class Category(models.Model):
@@ -16,15 +15,14 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+
 class GuestCustomer(models.Model):
-    #user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    # user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     username = models.CharField(max_length=200, blank=True, null=True)
     email = models.EmailField()
     password = models.CharField(max_length=255, blank=True, null=True)
     order_slug = models.CharField(max_length=255, blank=True, null=True)
-    
- 
 
 
 class Item(models.Model):
@@ -41,7 +39,6 @@ class Item(models.Model):
     image = models.ImageField(upload_to='emu/items', blank=True, null=True)
     thumbnail = models.ImageField(upload_to='emu/items', blank=True, null=True)
 
-
     # def resize_images(self):
     #     img = Image.open(self.thumbnail.path)
     #     if img.height > 300 or img.width > 300:
@@ -56,14 +53,13 @@ class Item(models.Model):
             return round(price - discount, 2)
         return self.price
 
-  
     def get_image_url(self):
         try:
             url = self.image.url
         except:
             url = ''
         return url
-    
+
     def get_thumbnail_url(self):
         try:
             url = self.thumbnail.url
@@ -88,7 +84,6 @@ class Item(models.Model):
         if not self.pk:
             self._get_slug()
         super().save(*args, **kwargs)
-        
 
     def get_absolute_url(self):
         return reverse("item-list", kwargs={"id": self.id})
@@ -119,12 +114,10 @@ class Order(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     is_complete = models.BooleanField(default=False)
     shipping_address = models.ForeignKey('ShippingAddress', related_name='shipping_address', on_delete=models.SET_NULL,
-                                        blank=True, null=True)
+                                         blank=True, null=True)
     coupon = models.ForeignKey('Coupon', on_delete=models.SET_NULL, blank=True, null=True)
     order_slug = models.SlugField(unique=True, editable=False, blank=True, default="", max_length=5)
 
-    
-        
     def _get_order_slug(self):
         max_length = self._meta.get_field('order_slug').max_length
         value = random.randint(1, 10000)  # self.name[:max_length]
@@ -134,15 +127,15 @@ class Order(models.Model):
                 break
             slug_candidate = '{}-{}'.format(slug_original, (i + 1))
         self.order_slug = slug_candidate
-        
+
     def save(self, *args, **kwargs):
         if not self.pk:
             self._get_order_slug()
         super().save(*args, **kwargs)
-        
+
     class Meta:
         ordering = ['-created_on']
-        
+
     def get_total(self):
         total = 0
         for item in self.items.all():
@@ -161,7 +154,7 @@ class Order(models.Model):
     def for_shipping(self):
         shipping = False
         for item in self.items.all():
-            if item.item.is_digital == False:
+            if not item.item.is_digital:
                 shipping = True
         return shipping
 
@@ -188,3 +181,10 @@ class ShippingAddress(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+class Contact(models.Model):
+    user = models.CharField(max_length=255, verbose_name="Name", help_text="Enter Your Name")
+    email_address = models.EmailField()
+    message = models.TextField(help_text="Enter Your Message")
+    created_on = models.DateTimeField(auto_now_add=True)

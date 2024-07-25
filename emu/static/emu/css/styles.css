@@ -500,8 +500,11 @@ tr:nth-child(even) {
     color:blueviolet;
 }
 
+.login-sign-up-form textarea{
+    resize: none;
+}
 
-.login-sign-up-form input[type=email],.login-sign-up-form input[type=text], .login-sign-up-form input[type=password] {
+.login-sign-up-form input[type=email],.login-sign-up-form input[type=text], .login-sign-up-form input[type=password],.login-sign-up-form textarea {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;

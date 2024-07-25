@@ -1,24 +1,24 @@
 import json
 import random
 
+from django import forms as f
+from django.conf import settings
 from django.contrib import messages
-from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views import View
-from django.contrib.auth.models import User
-from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import UserCreationForm
-from django.conf import settings
 
-from .forms import CheckoutForm, CouponForm, SignUpForm, SignInForm
+from .forms import CheckoutForm, CouponForm, SignUpForm, SignInForm, ContactForm
 from .models import Item, CartItem, Order, ShippingAddress, GuestCustomer
 from .utils import get_coupon, complete_order, update_guest_cart, get_next
-from .templatetags.cart import update_cart_items
 
 guest_order_slug = []
-guest_order_customers= []
+guest_order_customers = []
+
 
 class HomePage(View):
     def get(self, *args, **kwargs):
@@ -37,11 +37,9 @@ class ItemList(View):
 
 class ItemView(View):
     def get(self, request, id):
-        
         item = Item.objects.get(id=id)
-        context = {
-            'item': item
-        }
+        update_guest_cart(request)
+        context = {'item': item}
         return render(self.request, 'emu/item_view.html', context)
 
 
@@ -90,22 +88,22 @@ class AddItemToCart(View):
 class CartItems(View):
     def get(self, *args, **kwargs):
         try:
-            is_guest=False 
+            is_guest = False
             if self.request.user.is_authenticated:
                 order = Order.objects.get(user=self.request.user, is_complete=False)
 
             else:
                 is_guest = True
-                guest = update_guest_cart(self.request)  
+                guest = update_guest_cart(self.request)
                 cart_items = guest['order']['get_cart_items']
                 order_total = guest['order']['get_total']
                 items = guest['order']['items']
                 for_shipping = guest['order']['for_shipping']
-                order = {"get_cart_items": cart_items, 'get_total': order_total, 'items': items, 'for_shipping': for_shipping }
-                
-            
+                order = {"get_cart_items": cart_items, 'get_total': order_total, 'items': items,
+                         'for_shipping': for_shipping}
+
             context = {'order': order, 'is_guest': is_guest}
-            
+
             return render(self.request, 'emu/cart_items.html', context)
         except ObjectDoesNotExist:
             messages.warning(self.request, 'You do not have an active order.')
@@ -115,7 +113,7 @@ class CartItems(View):
 class Checkout(View):
     def get(self, *args, **kwargs):
         try:
-            is_guest=False 
+            is_guest = False
             form = CheckoutForm()
             if self.request.user.is_authenticated:
                 order = Order.objects.get(user=self.request.user, is_complete=False)
@@ -129,14 +127,16 @@ class Checkout(View):
 
                 return render(self.request, 'emu/checkout.html', context)
             else:
-                is_guest=True
-                guest = update_guest_cart(self.request)  
+                is_guest = True
+                guest = update_guest_cart(self.request)
                 cart_items = guest['order']['get_cart_items']
                 order_total = guest['order']['get_total']
                 items = guest['order']['items']
                 for_shipping = guest['order']['for_shipping']
-                order = {"get_cart_items": cart_items, 'get_total': order_total, 'items': items, 'for_shipping': for_shipping }
-                context = {'form': form, 'order': order, 'couponform': CouponForm(), 'DISPLAY_COUPON_FORM': True, 'is_guest': is_guest}
+                order = {"get_cart_items": cart_items, 'get_total': order_total, 'items': items,
+                         'for_shipping': for_shipping}
+                context = {'form': form, 'order': order, 'couponform': CouponForm(), 'DISPLAY_COUPON_FORM': True,
+                           'is_guest': is_guest}
                 return render(self.request, 'emu/checkout.html', context)
 
         except ObjectDoesNotExist:
@@ -146,10 +146,10 @@ class Checkout(View):
     def post(self, *args, **kwargs):
         data = json.loads(self.request.body)
         if self.request.user.is_authenticated:
-           
+
             order = Order.objects.get(user=self.request.user, is_complete=False)
             use_default = data['shippingInfo']['useDefault']
-            if use_default == True:
+            if use_default:
                 address_qs = ShippingAddress.objects.filter(
                     user=self.request.user,
                     default=True)
@@ -177,9 +177,9 @@ class Checkout(View):
                     shipping_address.save()
                     order.shipping_address = shipping_address
                     order.save()
-                    
-            #complete_order(self.request, self.request.user)
-           
+
+            # complete_order(self.request, self.request.user)
+
         else:
             print(self.request.COOKIES)
             username = data['userInfo']['name']
@@ -193,21 +193,20 @@ class Checkout(View):
             user, created = User.objects.get_or_create(username=username, email=email)
             user.password = password
             user.save()
-            
+
             guest_order_customers.append(username)
             guest_order_customers.append(email)
-            
-            guest = update_guest_cart(self.request)  
+
+            guest = update_guest_cart(self.request)
             items = guest['order']['items']
             order = Order.objects.create(user=user)
-            
-            
+
             for i in items:
                 item = Item.objects.get(id=i['item']['id'])
                 order_item, created = CartItem.objects.get_or_create(item=item, user=user, is_complete=False)
                 order.items.add(order_item)
             use_default = data['shippingInfo']['useDefault']
-            if use_default == True:
+            if use_default:
                 address_qs = ShippingAddress.objects.filter(
                     user=user,
                     default=True)
@@ -230,17 +229,18 @@ class Checkout(View):
                 shipping_address.save()
                 order.shipping_address = shipping_address
                 order.save()
-                if set_default == True:
+                if set_default:
                     shipping_address.default = True
                     shipping_address.save()
                     order.shipping_address = shipping_address
-                    order.save() 
+                    order.save()
             customer.order_slug = order.order_slug
             guest_order_slug.append(order.order_slug)
             customer.save()
             print(f"Order slug: {order.order_slug}")
-            #complete_order(self.request, user)
+            # complete_order(self.request, user)
         return JsonResponse("Order completed successfully", safe=False)
+
 
 class AddCoupon(View):
     def post(self, *args, **kwargs):
@@ -258,23 +258,24 @@ class AddCoupon(View):
                 print("error")
                 return redirect('emu:checkout')
 
+
 class PaypalPayment(View):
-    
+
     def get(self, *args, **kwargs):
         paypal_client_id = settings.PAYPAL_CLIENT_ID
-        
-     
+
         if self.request.user.is_authenticated:
             order = Order.objects.get(user=self.request.user, is_complete=False)
-           
+
         else:
             order = {'get_total': 0}
-            guest = update_guest_cart(self.request)  
+            guest = update_guest_cart(self.request)
             total = guest['order']['get_total']
-            order['get_total']= total
-            
+            order['get_total'] = total
+
         context = {'order': order, 'paypal_client_id': paypal_client_id}
         return render(self.request, 'emu/paypal_payment.html', context)
+
     def post(self, *args, **kwargs):
         print('Paid with paypal')
         if self.request.user.is_authenticated:
@@ -282,24 +283,27 @@ class PaypalPayment(View):
             complete_order(self.request, user)
         else:
             print("to be updated")
-            quest_customer = GuestCustomer.objects.get(order_slug=guest_order_slug[-1], username=guest_order_customers[0], email=guest_order_customers[1])
+            quest_customer = GuestCustomer.objects.get(order_slug=guest_order_slug[-1],
+                                                       username=guest_order_customers[0],
+                                                       email=guest_order_customers[1])
             print(quest_customer)
             guest_username = quest_customer.username
             guest_email = quest_customer.email
             user = User.objects.get(username=guest_username, email=guest_email)
-            complete_order(self.request,user )
+            complete_order(self.request, user)
             del guest_order_slug[:]
             del guest_order_customers[:]
             print(f"customer {guest_order_customers}")
-           
+
         return JsonResponse("Success Paypal", safe=False)
-    
+
 
 class StripePayment(View):
     def get(self, *args, **kwargs):
         return render(self.request, 'emu/stripe_payment.html')
-    
-class Register(View):   
+
+
+class Register(View):
     def get(self, *args, **kwargs):
         if not self.request.user.is_authenticated:
             sign_up_form = SignUpForm()
@@ -310,7 +314,7 @@ class Register(View):
             sign_up_form = SignUpForm()
             context = {'sign_up_form': sign_up_form}
             return render(self.request, 'emu/register.html', context)
-        
+
     def post(self, *args, **kwargs):
         sign_up_form = SignUpForm(data=self.request.POST)
         if sign_up_form.is_valid():
@@ -319,10 +323,10 @@ class Register(View):
             return redirect('emu:item-list')
         else:
             context = {'sign_up_form': sign_up_form}
-            return render(self.request, 'emu/register.html', context)   
-    
-    
-class Login(View):  
+            return render(self.request, 'emu/register.html', context)
+
+
+class Login(View):
     def get(self, *args, **kwargs):
         print(self.request.user)
         get_next.next = self.request.GET.get('next')
@@ -336,8 +340,8 @@ class Login(View):
             context = {'sign_in_form': sign_in_form}
             messages.success(self.request, "Successfully signed out. Sign In again")
             return render(self.request, 'emu/login.html', context)
-        
-    def post(self,*args, **kwargs):
+
+    def post(self, *args, **kwargs):
         sign_in_form = SignInForm(data=self.request.POST)
         if sign_in_form.is_valid():
             username = sign_in_form.cleaned_data.get('username')
@@ -348,20 +352,51 @@ class Login(View):
             if get_next.next:
                 return redirect(get_next.next)
             else:
-                return redirect('emu:item-list')     
+                return redirect('emu:item-list')
         else:
             context = {'sign_in_form': sign_in_form}
-            return render(self.request, 'emu/login.html', context) 
-    
+            return render(self.request, 'emu/login.html', context)
+
+
 class LogoutUser(View):
     def get(self, *args, **kwargs):
         logout(self.request)
         return redirect('emu:login')
-    
+
+
 class Contact(View):
     def get(self, *args, **kwargs):
-        return render(self.request, 'emu/contact.html')
-    
+        form = ContactForm()
+        context = {'form': form}
+        return render(self.request, 'emu/contact.html', context)
+
+    def post(self, *args, **kwargs):
+        form = ContactForm(data=self.request.POST)
+        error_user = ''
+        if form.is_valid():
+            user = form.cleaned_data.get('user')
+            if self.request.user.is_authenticated:
+                if user == self.request.user.username:
+                    form.save()
+                    return redirect('emu:contact')
+                else:
+                    try:
+                        error_user = "Your name must match with your username"
+                        raise f.ValidationError("user", "jjhj")
+                        # raise ValidationError("jjhhjhj")
+                    except ValidationError:
+                        print(self.request.user)
+                        context = {'form': form, "error_user": error_user}
+                        return render(self.request, 'emu/contact.html', context)
+
+            else:
+                form.save()
+                return redirect('emu:contact')
+        else:
+            context = {'form': form}
+            return render(self.request, 'emu/contact.html', context)
+
+
 class About(View):
     def get(self, *args, **kwargs):
         return render(self.request, 'emu/about.html')

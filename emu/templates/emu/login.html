@@ -1,41 +1,41 @@
 {% extends "emu/base.html" %}
 {% load static %}
-{%block title%}|Login{% endblock %}
+{%block title%}|Sign In{% endblock %}
 {% block content %}
 
 <form action="." method="post" class="login-sign-up-form">
-  {% csrf_token %}
+    {% csrf_token %}
     <div class="login-imgcontainer">
-      <h1 style="text-align:center;">Sign In</h1>
-      <img src="{% static 'emu/images/profile holder.jfif' %}" alt="prfile photo" class="avatar">
+        <h1 style="text-align:center;">Sign In</h1>
+        <img src="{% static 'emu/images/profile holder.jfif' %}" alt="prfile photo" class="avatar">
     </div>
-  
+
     <div class="login-container">
-      {% for field in sign_in_form %}
-      <p>
-        {{ field.label_tag }}<br>
-        {{ field }}
-        {% if field.help_text %}
-        <small style="color: grey">{{ field.help_text }}</small>
-        {% endif %}
-        {% for error in sign_in_form.non_field_errors %}
+        {% for field in sign_in_form %}
+        <p>
+            {{ field.label_tag }}<br>
+            {{ field }}
+            {% if field.help_text %}
+            <small style="color: grey">{{ field.help_text }}</small>
+            {% endif %}
+            {% for error in sign_in_form.non_field_errors %}
         <p style="color: red">{{ error }}</p>
         {% endfor %}
-    </p>
-    {% endfor %}
-    <button type="submit">Sign In</button>
-      <label>
-        <input type="checkbox" checked="checked" name="remember"> Remember me
-      </label>
+        </p>
+        {% endfor %}
+        <button type="submit">Sign In</button>
+        <label>
+            <input type="checkbox" checked="checked" name="remember"> Remember me
+        </label>
     </div>
-  
+
     <div class="login-container" style="background-color:#f1f1f1; border-radius: .5rem;">
-      <!-- <button type="button" class="cancelbtn">Cancel</button> -->
-       <div class="login-links">
+        <!-- <button type="button" class="cancelbtn">Cancel</button> -->
+        <div class="login-links">
             <span class="login-signup"><a href="{% url 'emu:register' %}">Sign Up?</a></span>
             <span class="password"><a href="#">Forgot password?</a></span>
-       </div>
-      
+        </div>
+
     </div>
 </form>
 

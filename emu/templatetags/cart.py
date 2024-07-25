@@ -1,10 +1,13 @@
 from django import template
+
 from emu.models import Order
 
 register = template.Library()
 
+
 class update_cart_items:
     items = 0
+
 
 @register.filter
 def cart_items_count(user):
@@ -15,5 +18,3 @@ def cart_items_count(user):
     else:
         return update_cart_items.items
     return 0
-    
-        

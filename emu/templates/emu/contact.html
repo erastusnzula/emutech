@@ -2,5 +2,28 @@
 {% load static %}
 {%block title%}|Contact{% endblock %}
 {% block content %}
-<p>Contact</p>
+
+<form action="." method="post" class="login-sign-up-form">
+    {% csrf_token %}
+
+    <div class="signup-container">
+        <h1 style="text-align:center;">Contact Us</h1>
+        {% if error_user%}
+        <p style="color:red;">{{error_user}} </p>
+        {%endif%}
+        {% for field in form %}
+        <p>
+            {{ field.label_tag }}<br>
+            {{ field }}
+            {% if field.help_text %}
+            <small style="color: grey">{{ field.help_text }}</small>
+            {% endif %}
+            {% for error in field.errors %}
+        <p style="color: red">{{ error }}</p>
+        {% endfor %}
+        </p>
+        {% endfor %}
+        <button type="submit">Send Message</button>
+    </div>
+</form>
 {% endblock %}

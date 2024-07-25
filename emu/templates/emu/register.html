@@ -3,34 +3,37 @@
 {%block title%}|Sign Up{% endblock %}
 {% block content %}
 <form action="." method="post" class="login-sign-up-form">
-  {% csrf_token %}
+    {% csrf_token %}
 
-    {% comment %} <div class="signup-imgcontainer">
-      <img src="{% static 'emu/images/profile holder.jfif' %}" alt="prfile photo" class="avatar">
-    </div> {% endcomment %}
-  
+    {% comment %}
+    <div class="signup-imgcontainer">
+        <img src="{% static 'emu/images/profile holder.jfif' %}" alt="prfile photo" class="avatar">
+    </div>
+    {% endcomment %}
+
     <div class="signup-container">
-      <h1 style="text-align:center;">Sign Up</h1>
-      {% for field in sign_up_form %}
-      <p>
-        {{ field.label_tag }}<br>
-        {{ field }}
-        {% if field.help_text %}
-        <small style="color: grey">{{ field.help_text }}</small>
-        {% endif %}
-        {% for error in field.errors %}
+        <h1 style="text-align:center;">Sign Up</h1>
+        {% for field in sign_up_form %}
+        <p>
+            {{ field.label_tag }}<br>
+            {{ field }}
+            {% if field.help_text %}
+            <small style="color: grey">{{ field.help_text }}</small>
+            {% endif %}
+            {% for error in field.errors %}
         <p style="color: red">{{ error }}</p>
         {% endfor %}
-    </p>
-    {% endfor %}
-    <button type="submit">Sign Up</button>
-    <div class="login-container" style="background-color:#f1f1f1; border-radius: .5rem;">
-      <!-- <button type="button" class="cancelbtn">Cancel</button> -->
-       <div class="login-links">
-            <span class="login-signup"><a href="{% url 'emu:login' %}">Already have an account?</a></span>
-            <span class="password"><a href="{% url 'emu:login' %}">Sign In?</a></span>
-       </div>
-      
+        </p>
+        {% endfor %}
+        <button type="submit">Sign Up</button>
+        <div class="login-container" style="background-color:#f1f1f1; border-radius: .5rem;">
+            <!-- <button type="button" class="cancelbtn">Cancel</button> -->
+            <div class="login-links">
+                <span class="login-signup"><a href="{% url 'emu:login' %}">Already have an account?</a></span>
+                <span class="password"><a href="{% url 'emu:login' %}">Sign In?</a></span>
+            </div>
+
+        </div>
     </div>
 </form>
 
