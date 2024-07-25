@@ -322,16 +322,13 @@ class Register(View):
             return render(self.request, 'emu/register.html', context)   
     
     
-class Login(View):
-    
+class Login(View):  
     def get(self, *args, **kwargs):
         print(self.request.user)
         get_next.next = self.request.GET.get('next')
-        print(self.request.GET.get('next'))
         if not self.request.user.is_authenticated:
             sign_in_form = SignInForm()
             context = {'sign_in_form': sign_in_form}
-           
             return render(self.request, 'emu/login.html', context)
         else:
             logout(self.request)
@@ -351,9 +348,7 @@ class Login(View):
             if get_next.next:
                 return redirect(get_next.next)
             else:
-                return redirect('emu:item-list')
-        
-            
+                return redirect('emu:item-list')     
         else:
             context = {'sign_in_form': sign_in_form}
             return render(self.request, 'emu/login.html', context) 
