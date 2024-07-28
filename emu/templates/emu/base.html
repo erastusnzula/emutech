@@ -29,7 +29,7 @@
         }
 
         let csrftoken = getToken('csrftoken');
-        console.log(csrftoken)
+        //console.log(csrftoken)
 
         function getCookie(name) {
             let cookieArr = document.cookie.split(';');
@@ -77,14 +77,14 @@
             </li>
             {% if request.user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'emu:logout' %}" style="--i:3;">Log Out</a>
+                <a class="nav-link" href="{% url 'emu:logout' %}" style="--i:5;">Log Out</a>
             </li>
             {%else%}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'emu:login' %}" style="--i:3;">Sign In</a>
+                <a class="nav-link" href="{% url 'emu:login' %}" style="--i:6;">Sign In</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'emu:register' %}" style="--i:3;">Sign Up</a>
+                <a class="nav-link" href="{% url 'emu:register' %}" style="--i:7;">Sign Up</a>
             </li>
             {%endif%}
         </ul>

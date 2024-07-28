@@ -4,7 +4,7 @@ const viewItem = document.getElementsByClassName('view-item');
 
 for (let i=0; i<addToCartBtn.length; i++){
     addToCartBtn[i].addEventListener('click',()=>{
-        console.log(user)
+        //console.log(user)
         let itemID = addToCartBtn[i].dataset.item_id;
         let action = addToCartBtn[i].dataset.action;
         if (user !=='AnonymousUser'){
@@ -20,7 +20,7 @@ for (let i=0; i<viewItem.length; i++){
     viewItem[i].addEventListener('click', ()=>{
         let itemID = viewItem[i].dataset.item_id;
         let action = viewItem[i].dataset.action;
-        console.log(action)
+        //console.log(action)
         if(action === 'view'){
             window.location.href = "/item_view/" + itemID
         }
@@ -31,7 +31,7 @@ for (let i=0; i<viewItem.length; i++){
 
 for (let i=0; i<removeItemBtn.length; i++){
     removeItemBtn[i].addEventListener('click',()=>{
-        console.log(user)
+        //console.log(user)
         let itemID = removeItemBtn[i].dataset.item_id;
         let action = removeItemBtn[i].dataset.action;
         if (user !=='AnonymousUser'){
@@ -44,7 +44,7 @@ for (let i=0; i<removeItemBtn.length; i++){
 }
 
 const updateGuestOrder = (itemID, action)=>{
-    console.log("Guest User")
+    //console.log("Guest User")
     if(action == 'add'){
         if(cart[itemID]== undefined){
             cart[itemID] = {'quantity': 1}
@@ -59,14 +59,14 @@ const updateGuestOrder = (itemID, action)=>{
             delete cart[itemID]
         }
     }
-    console.log(cart)
+    //console.log(cart)
     document.cookie= 'cart='+ JSON.stringify(cart) + ';domian=;path=/'
     location.reload()
     
 }
 
 const updateCart= (itemID, action)=>{
-    console.log(itemID, action)
+    //console.log(itemID, action)
     const url = "/add_to_cart/"
     fetch(url, {
         method: 'POST',
@@ -78,7 +78,7 @@ const updateCart= (itemID, action)=>{
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data)
+        //console.log(data)
         location.reload()
     })
 }

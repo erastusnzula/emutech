@@ -169,7 +169,7 @@
     const checkoutForm = document.getElementById("checkout-form")
     const saveDefault = document.getElementById("save")
     const useDefault = document.getElementById("use_default")
-    console.log(useDefault)
+    //console.log(useDefault)
 
     if (saveDefault){
         saveDefault.addEventListener('change', ()=>{
@@ -191,7 +191,7 @@
     let shipping = '{{order.for_shipping}}'
     let total = '{{order.get_total}}'
     if(shipping == 'False'){
-        console.log("shipping")
+        //console.log("shipping")
         shippingInfo.innerHTML = '';
     }
 
@@ -219,7 +219,7 @@
     
     checkoutForm.addEventListener('submit',(e)=>{
         e.preventDefault()
-        console.log("Submitting data...")
+        //console.log("Submitting data...")
         //checkoutData()
     })
 
@@ -262,10 +262,10 @@
             userInfo.email = checkoutForm.email.value
         }
 
-        console.log(userInfo)
-        console.log(paymentOption)
+        //console.log(userInfo)
+        //console.log(paymentOption)
         if(checkoutForm.use_default){
-            console.log(checkoutForm.use_default)
+           // console.log(checkoutForm.use_default)
         }
        
         let url = '/checkout/'
@@ -281,7 +281,7 @@
             return response.json()
         })
         .then((data)=>{
-            console.log("Success", data)
+            //console.log("Success", data)
             //alert("Transaction completed")
             //cart={}
             //document.cookie= 'cart='+ JSON.stringify(cart) + ';domian=;path=/'

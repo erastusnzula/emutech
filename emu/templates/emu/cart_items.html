@@ -10,7 +10,7 @@
             <h1>Your Cart</h1>
             <p class="items">Total items in cart - <span class="cart-total-span">{{order.get_cart_items}}</span></p>
         </div>
-        <div class="cart-link">
+        <div class="cart-link" id="cart-big-screen">
             <a href="{% url 'emu:item-list' %}">Continue Shopping</a>
             <a href="{% url 'emu:checkout' %}">Checkout</a>
         </div>
@@ -49,6 +49,13 @@
                 </td>
             </tr>
         </table>
+    </div>
+
+    <div class="cart-small-screen" id="cart-small-screen">
+        <div class="cart-link">
+            <a href="{% url 'emu:checkout' %}">Checkout</a>
+            <a href="{% url 'emu:item-list' %}">Continue Shopping</a>
+        </div>
     </div>
 </div>
 
