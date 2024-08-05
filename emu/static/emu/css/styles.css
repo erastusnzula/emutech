@@ -728,5 +728,13 @@ tr:nth-child(even) {
     .checkout .body .cart .coupon .coupon-form button {
         width: 100%;
     }
+
+    .paypal {
+        width: 100%;
+    }
+
+    .paypal .paypal-body {
+        width: 90%;
+    }
 }
 
