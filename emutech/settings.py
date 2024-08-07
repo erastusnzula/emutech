@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'users.apps.UsersConfig',
     'django_countries',
     'emu.apps.EmuConfig',
     'mpesa.apps.MpesaConfig',
@@ -126,6 +127,7 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY='same-origin-allow-popups'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'emu/static'),
     os.path.join(BASE_DIR, 'mpesa/static'),
+    os.path.join(BASE_DIR, 'users/static'),
     # Add more app static directories as needed
 ]
 STATIC_URL = 'static/'

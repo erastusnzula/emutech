@@ -302,68 +302,6 @@ class StripePayment(View):
     def get(self, *args, **kwargs):
         return render(self.request, 'emu/stripe_payment.html')
 
-
-class Register(View):
-    def get(self, *args, **kwargs):
-        if not self.request.user.is_authenticated:
-            sign_up_form = SignUpForm()
-            context = {'sign_up_form': sign_up_form}
-            return render(self.request, 'emu/register.html', context)
-        else:
-            logout(self.request)
-            sign_up_form = SignUpForm()
-            context = {'sign_up_form': sign_up_form}
-            return render(self.request, 'emu/register.html', context)
-
-    def post(self, *args, **kwargs):
-        sign_up_form = SignUpForm(data=self.request.POST)
-        if sign_up_form.is_valid():
-            new_user = sign_up_form.save()
-            login(self.request, new_user)
-            return redirect('emu:item-list')
-        else:
-            context = {'sign_up_form': sign_up_form}
-            return render(self.request, 'emu/register.html', context)
-
-
-class Login(View):
-    def get(self, *args, **kwargs):
-        print(self.request.user)
-        get_next.next = self.request.GET.get('next')
-        if not self.request.user.is_authenticated:
-            sign_in_form = SignInForm()
-            context = {'sign_in_form': sign_in_form}
-            return render(self.request, 'emu/login.html', context)
-        else:
-            logout(self.request)
-            sign_in_form = SignInForm()
-            context = {'sign_in_form': sign_in_form}
-            messages.success(self.request, "Successfully signed out. Sign In again")
-            return render(self.request, 'emu/login.html', context)
-
-    def post(self, *args, **kwargs):
-        sign_in_form = SignInForm(data=self.request.POST)
-        if sign_in_form.is_valid():
-            username = sign_in_form.cleaned_data.get('username')
-            password = sign_in_form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            print(f"Next: {get_next.next}")
-            login(self.request, user)
-            if get_next.next:
-                return redirect(get_next.next)
-            else:
-                return redirect('emu:item-list')
-        else:
-            context = {'sign_in_form': sign_in_form}
-            return render(self.request, 'emu/login.html', context)
-
-
-class LogoutUser(View):
-    def get(self, *args, **kwargs):
-        logout(self.request)
-        return redirect('emu:login')
-
-
 class Contact(View):
     def get(self, *args, **kwargs):
         form = ContactForm()

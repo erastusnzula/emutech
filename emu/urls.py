@@ -13,9 +13,6 @@ urlpatterns = [
     path('add-coupon/', views.AddCoupon.as_view(), name='add-coupon'),
     path('paypal/', views.PaypalPayment.as_view(), name="paypal"),
     path('stripe/', views.StripePayment.as_view(), name='stripe'),
-    path('sign up/', views.Register.as_view(), name='register'),
-    path('sign in/', views.Login.as_view(), name='login'),
     path('contact/', views.Contact.as_view(), name='contact'),
-    path('sign out/', views.LogoutUser.as_view(), name='logout'),
     path('about/', views.About.as_view(), name='about'),
 ]
