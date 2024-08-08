@@ -1,8 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import render, redirect
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 from django.views import View
-
 from emu.forms import SignUpForm, SignInForm
 from emu.utils import get_next
 
@@ -67,3 +68,26 @@ class LogoutUser(View):
         logout(self.request)
         return redirect('users:login')
 
+
+
+class ChangePassword(View):
+    def get(self, *args, **kwargs):
+        form = PasswordChangeForm(self.request.user)
+        context = {'form': form}
+        return render(self.request, 'users/change_password.html', context)
+    
+    def post(self, *args, **kwargs):
+        form = PasswordChangeForm(self.request.user, data=self.request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(self.request, user)
+            return redirect('users:change-password-done')
+        else:
+            form = PasswordChangeForm(self.request.user,data=self.request.POST)
+            context = {'form': form}
+            return render(self.request, 'users/change_password.html', context)
+
+        
+class ChangePasswordDone(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'users/change_password_done.html')

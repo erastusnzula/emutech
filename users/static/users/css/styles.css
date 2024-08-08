@@ -61,6 +61,26 @@
     align-items: center;
 }
 
+.reset-form-buttons{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.reset-form-buttons .btn-submit{
+    border: none;
+    padding: .7rem;
+    text-decoration: none;
+    color: #fff;
+    background-color: blueviolet;
+    border-radius: .5rem;
+
+}
+
+.reset-form-buttons .btn-submit:hover{
+    padding: .8rem;
+}
+
 @media (max-width: 768px) {
     .login-sign-up-form {
         border: 1px solid #f1f1f1;

@@ -78,8 +78,12 @@
             </li>
             {% if request.user.is_authenticated %}
             <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:change-password' %}" style="--i:5;">Change Password</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{% url 'users:logout' %}" style="--i:5;">Log Out</a>
             </li>
+           
             {%else%}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'users:login' %}" style="--i:6;">Sign In</a>

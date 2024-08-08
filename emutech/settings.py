@@ -146,6 +146,13 @@ MPESA_ENVIRONMENT = 'sandbox'  # or 'production'
 MPESA_CALLBACK_URL = config('MPESA_CALLBACK_URL')
 PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
