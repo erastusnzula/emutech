@@ -1,0 +1,79 @@
+.login-sign-up-form {
+    border: 1px solid #f1f1f1;
+    width: 500px;
+    padding: 1rem;
+    margin: auto;
+    border-radius: .5rem;
+    color:blueviolet;
+}
+
+.login-sign-up-form textarea{
+    resize: none;
+}
+
+.login-sign-up-form input[type=email],.login-sign-up-form input[type=text], .login-sign-up-form input[type=password],.login-sign-up-form textarea {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    outline: none;
+    box-sizing: border-box;
+    border-radius: .5rem;
+}
+
+
+.login-sign-up-form button {
+    background-color: blueviolet;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    border-radius: .5rem;
+    width: 100%;
+}
+
+
+.login-sign-up-form button:hover {
+    opacity: 0.8;
+}
+
+
+.login-sign-up-form .login-imgcontainer,.login-sign-up-form .signup-imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+}
+
+
+.login-sign-up-form img.avatar {
+    width: 30%;
+    border-radius: 50%;
+}
+
+.login-sign-up-form .login-container, .login-sign-up-form .signup-container {
+    padding: 10px;
+}
+
+.login-sign-up-form .login-links{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .login-sign-up-form {
+        border: 1px solid #f1f1f1;
+        width: 100%;
+        padding: 1rem;
+        margin: auto;
+        border-radius: .5rem;
+        color: blueviolet;
+    }
+
+    .login-sign-up-form .login-container, .login-sign-up-form .signup-container {
+        padding: 10px;
+        width: 100%;
+
+    }
+}
