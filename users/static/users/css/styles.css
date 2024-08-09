@@ -81,6 +81,12 @@
     padding: .8rem;
 }
 
+.login-sign-up-form.reset-done{
+    color: black;
+    letter-spacing: .1rem;
+    line-height: 2rem;
+}
+
 @media (max-width: 768px) {
     .login-sign-up-form {
         border: 1px solid #f1f1f1;
