@@ -1,6 +1,8 @@
 {% extends "emu/base.html" %}
-{% block content %}
+{%block title%}|Mpesa{% endblock %}
 {% load static %}
+
+{% block content %}
 
 <!-- templates/mpesa/stk_push_form.html -->
 {% if no_order %}
@@ -19,9 +21,9 @@
     </form>
 
     <div id="response"></div>
-    <div class="">
+    <!-- <div class="">
         <a href="#">Done</a>
-    </div>
+    </div> -->
 
 </div>
 {%endif%}
