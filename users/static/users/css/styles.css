@@ -89,6 +89,13 @@
     line-height: 2rem;
 }
 
+.login-sign-up-form.about{
+    background-color: blueviolet;
+    color: #fff;
+    letter-spacing: .1rem;
+    line-height: 2rem;
+}
+
 .reset-complete{
     background-color: blueviolet;
     padding: .5rem;

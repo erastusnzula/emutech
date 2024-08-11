@@ -4,8 +4,29 @@
 {% block content %}
 
 <div class='item-view'>
-    <h2>Item View</h2>
-    {% include 'emu/snippets/item.html' %}
+    
+    <div class="card-view">
+        <div class="card-header">
+            <h2>{{ item.name }}</h2>
+            <img class="view-item" data-item_id={{item.id}} data-action="view" src="{{item.get_image_url}}" alt=" "/>
+        </div>
+        <div class="card-body">
+            <div class="price">
+                <p>Name: <span>{{ item.name }}</span></p>
+                {% if item.discount%}
+                <p>Price: ${{ item.item_price }} </p>
+                <p>Discount: {{ item.discount }}%</p>
+                {% else %}
+                <p>Price: ${{ item.item_price }}</p>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <a href="#" class="update-cart" data-item_id={{item.id}} data-action="add">Add to Cart</a>
+                {% comment %} <a href="#" class="view-item" data-item_id={{item.id}} data-action="view">View</a> {% endcomment %}
+            </div>
+        </div>
+        
+    </div>
 </div>
 
 {% endblock content %}

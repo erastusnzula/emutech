@@ -3,7 +3,7 @@
     <div class="card-header">
         <img class="view-item" data-item_id={{item.id}} data-action="view" src="{{item.get_image_url}}" alt=" "/>
     </div>
-    <div class="card-body">
+    {% comment %} <div class="card-body">
         <p>Name: <span>{{ item.name }}</span></p>
         {% if item.discount%}
         <p>Price: ${{ item.item_price }} </p>
@@ -15,5 +15,5 @@
     <div class="card-footer">
         <a href="#" class="update-cart" data-item_id={{item.id}} data-action="add">Add to Cart</a>
         <a href="#" class="view-item" data-item_id={{item.id}} data-action="view">View</a>
-    </div>
+    </div> {% endcomment %}
 </div>
